@@ -1,170 +1,189 @@
-# Qwen Code
+# Qwen Code - 내부망 LLM 지원 버전
 
 ![Qwen Code Screenshot](./docs/assets/qwen-screenshot.png)
 
-Qwen Code is a command-line AI workflow tool adapted from [**Gemini CLI**](https://github.com/google-gemini/gemini-cli) (Please refer to [this document](./README.gemini.md) for more details), optimized for [Qwen3-Coder](https://github.com/QwenLM/Qwen3-Coder) models with enhanced parser support & tool support.
+Qwen Code는 내부망 환경에서 자체 LLM 모델을 사용할 수 있도록 수정된 AI 코딩 어시스턴트입니다.
+[**Gemini CLI**](https://github.com/google-gemini/gemini-cli)를 기반으로 하여 내부망 LLM 서버와 연동할 수 있습니다.
 
-> [!WARNING]
-> Qwen Code may issue multiple API calls per cycle, resulting in higher token usage, similar to Claude Code. We’re actively working to enhance API efficiency and improve the overall developer experience.
+## 🚀 빠른 시작 (3단계)
 
-## Key Features
-
-- **Code Understanding & Editing** - Query and edit large codebases beyond traditional context window limits
-- **Workflow Automation** - Automate operational tasks like handling pull requests and complex rebases
-- **Enhanced Parser** - Adapted parser specifically optimized for Qwen-Coder models
-
-## Quick Start
-
-### Prerequisites
-
-Ensure you have [Node.js version 20](https://nodejs.org/en/download) or higher installed.
-
+### 1단계: 설치
 ```bash
-curl -qL https://www.npmjs.com/install.sh | sh
-```
-
-### Installation
-
-```bash
-npm install -g @qwen-code/qwen-code
-qwen --version
-```
-
-Then run from anywhere:
-
-```bash
-qwen
-```
-
-Or you can install it from source:
-
-```bash
-git clone https://github.com/QwenLM/qwen-code.git
+git clone <this-repository>
 cd qwen-code
 npm install
-npm install -g .
 ```
 
-### API Configuration
+### 2단계: 내부망 LLM 설정
+```bash
+# 내부망 설정 활성화
+npm run setup-internal
+```
 
-Set your Qwen API key (In Qwen Code project, you can also set your API key in `.env` file). the `.env` file should be placed in the root directory of your current project.
+### 3단계: 사용
+```bash
+# 테스트 서버 실행 (별도 터미널)
+npm run test:proxy
 
-> ⚠️ **Notice:** <br>
-> **If you are in mainland China, please go to https://bailian.console.aliyun.com/ or https://modelscope.cn/docs/model-service/API-Inference/intro to apply for your API key** <br>
-> **If you are not in mainland China, please go to https://modelstudio.console.alibabacloud.com/ to apply for your API key**
+# qwen 실행
+npm run qwen
+```
 
-If you are in mainland China, you can use Qwen3-Coder through the Alibaba Cloud bailian platform.
+## 🌐 글로벌 설치 (권장)
+
+한 번 설치하면 어디서든 `qwen` 명령어 사용 가능:
 
 ```bash
-export OPENAI_API_KEY="your_api_key_here"
-export OPENAI_BASE_URL="https://dashscope.aliyuncs.com/compatible-mode/v1"
-export OPENAI_MODEL="qwen3-coder-plus"
-```
+# 글로벌 설치
+npm run install-global
 
-If you are in mainland China, ModelScope offers 2,000 free model inference API calls per day:
-
-```bash
-export OPENAI_API_KEY="your_api_key_here"
-export OPENAI_BASE_URL="https://api-inference.modelscope.cn/v1"
-export OPENAI_MODEL="Qwen/Qwen3-Coder-480B-A35B-Instruct"
-```
-
-If you are not in mainland China, you can use Qwen3-Coder through the Alibaba Cloud modelstuido platform.
-
-```bash
-export OPENAI_API_KEY="your_api_key_here"
-export OPENAI_BASE_URL="https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
-export OPENAI_MODEL="qwen3-coder-plus"
-```
-
-## Usage Examples
-
-### Explore Codebases
-
-```sh
-cd your-project/
+# 어디서든 사용
+cd /any/directory
 qwen
-> Describe the main pieces of this system's architecture
 ```
 
-### Code Development
+## 📋 명령어 모음
 
-```sh
-> Refactor this function to improve readability and performance
+| 명령어 | 설명 |
+|--------|------|
+| `npm run setup-internal` | 내부망 LLM 설정 활성화 |
+| `npm run test:proxy` | 테스트용 프록시 서버 실행 |
+| `npm run qwen` | qwen 실행 (로컬) |
+| `npm run install-global` | 글로벌 설치 |
+| `qwen` | qwen 실행 (글로벌 설치 후) |
+
+## ⚙️ 내부망 설정
+
+설정은 자동으로 감지됩니다:
+
+### 로컬 설정 (프로젝트별)
+`.env` 파일:
+```env
+INTERNAL_LLM_BASE_URL=http://your-internal-server:8443/api/v1
+INTERNAL_LLM_API_KEY=your-api-key
+INTERNAL_LLM_MODEL=your-model-name
 ```
 
-### Automate Workflows
-
-```sh
-> Analyze git commits from the last 7 days, grouped by feature and team member
+### 글로벌 설정 (사용자별)
+`~/.qwen/.env` 파일:
+```env
+INTERNAL_LLM_BASE_URL=http://your-internal-server:8443/api/v1
+INTERNAL_LLM_API_KEY=your-api-key
+INTERNAL_LLM_MODEL=your-model-name
 ```
 
-```sh
-> Convert all images in this directory to PNG format
+## 🔧 실제 내부망 서버 연결
+
+테스트 서버 대신 실제 내부망 LLM 서버 사용:
+
+1. **설정 파일 수정** (`.env` 또는 `~/.qwen/.env`):
+```env
+INTERNAL_LLM_BASE_URL=http://your-internal-llm-server.com/api/v1
+INTERNAL_LLM_API_KEY=your-actual-api-key
+INTERNAL_LLM_MODEL=your-model-name
+NODE_TLS_REJECT_UNAUTHORIZED=0  # SSL 우회 필요시
 ```
 
-## Popular Tasks
-
-### Understand New Codebases
-
-```text
-> What are the core business logic components?
-> What security mechanisms are in place?
-> How does the data flow work?
+2. **실행**:
+```bash
+qwen  # 자동으로 내부망 서버로 연결
 ```
 
-### Code Refactoring & Optimization
+## 📝 OpenAI API 호환성
 
-```text
-> What parts of this module can be optimized?
-> Help me refactor this class to follow better design patterns
-> Add proper error handling and logging
+내부망 LLM 서버는 OpenAI Chat Completions API와 호환되어야 합니다:
+
+**엔드포인트**: `POST /chat/completions`
+
+**요청 형식**:
+```json
+{
+  "model": "your-model",
+  "messages": [{"role": "user", "content": "Hello"}],
+  "max_tokens": 2000,
+  "temperature": 0.7
+}
 ```
 
-### Documentation & Testing
-
-```text
-> Generate comprehensive JSDoc comments for this function
-> Write unit tests for this component
-> Create API documentation
+**응답 형식**:
+```json
+{
+  "choices": [{
+    "message": {
+      "role": "assistant", 
+      "content": "Hello! How can I help you?"
+    },
+    "finish_reason": "stop"
+  }],
+  "usage": {"total_tokens": 30}
+}
 ```
 
-## Benchmark Results
+## 🔄 모드 전환
 
-### Terminal-Bench
+### 내부망 모드 → 일반 모드
+```bash
+# 설정 파일 백업
+mv .env .env.backup           # 로컬 설정
+mv ~/.qwen/.env ~/.qwen/.env.backup  # 글로벌 설정
+```
 
-| Agent     | Model              | Accuracy |
-| --------- | ------------------ | -------- |
-| Qwen Code | Qwen3-Coder-480A35 | 37.5     |
+### 일반 모드 → 내부망 모드  
+```bash
+# 설정 파일 복원
+mv .env.backup .env           # 로컬 설정
+mv ~/.qwen/.env.backup ~/.qwen/.env  # 글로벌 설정
+```
 
-## Project Structure
+## 🐛 문제 해결
+
+### "Connection error" 발생시
+1. 프록시 서버가 실행 중인지 확인: `npm run test:proxy`
+2. 포트 확인: `curl http://localhost:8443/devport/api/v1/chat/completions`
+3. 설정 확인: `.env` 파일의 URL이 정확한지 확인
+
+### 설정이 적용되지 않을 때
+```bash
+# 디버그 모드로 실행 (설정 로드 과정 확인)
+DEBUG=1 qwen
+```
+
+### 글로벌 설치 문제
+```bash
+# 기존 설치 제거 후 재설치
+npm uninstall -g @qwen-code/qwen-code
+npm run install-global
+```
+
+## 📁 파일 구조
 
 ```
 qwen-code/
-├── packages/           # Core packages
-├── docs/              # Documentation
-├── examples/          # Example code
-└── tests/            # Test files
+├── .env                     # 로컬 내부망 설정
+├── test-proxy-server.js     # 테스트용 프록시 서버
+├── setup-global-internal-llm.js  # 글로벌 설정 스크립트
+├── package.json            # npm 스크립트 포함
+└── packages/               # 소스 코드
 ```
 
-## Development & Contributing
+## 🌟 주요 기능
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) to learn how to contribute to the project.
+- **내부망 LLM 지원** - 외부 인터넷 없이 내부 LLM 서버 사용
+- **자동 설정 감지** - `.env` 파일 기반 자동 구성
+- **OpenAI API 호환** - 표준 API 형식 지원
+- **SSL 우회 지원** - 자체 서명 인증서 환경 대응
+- **글로벌/로컬 설정** - 사용자별/프로젝트별 설정 가능
 
-## Troubleshooting
+## 📚 추가 정보
 
-If you encounter issues, check the [troubleshooting guide](docs/troubleshooting.md).
+- **보안**: `NODE_TLS_REJECT_UNAUTHORIZED=0`은 개발/테스트 환경에서만 사용하세요
+- **성능**: 내부망 LLM 응답 속도는 서버 성능에 따라 달라집니다
+- **호환성**: OpenAI API 호환 서버라면 모든 LLM 모델 사용 가능합니다
 
-## Acknowledgments
+## 🔗 원본 프로젝트
 
-This project is based on [Google Gemini CLI](https://github.com/google-gemini/gemini-cli). We acknowledge and appreciate the excellent work of the Gemini CLI team. Our main contribution focuses on parser-level adaptations to better support Qwen-Coder models.
+이 프로젝트는 [Google Gemini CLI](https://github.com/google-gemini/gemini-cli)를 기반으로 하여 내부망 LLM 지원 기능을 추가했습니다.
 
-## License
+## 📄 라이선스
 
 [LICENSE](./LICENSE)
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=QwenLM/qwen-code&type=Date)](https://www.star-history.com/#QwenLM/qwen-code&Date)
-# qwen-code
-# qwen-code
