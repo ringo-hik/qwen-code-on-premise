@@ -7,7 +7,18 @@
       "Bash(npm install:*)",
       "Bash(node:*)",
       "Bash(start /b node test-proxy-server.js)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(rm:*)",
+      "Bash(npm run:*)",
+      "Bash(ls:*)",
+      "Bash(qwen:*)",
+      "Bash(find:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(git push:*)",
+      "Bash(touch:*)",
+      "Bash(git --git-dir=D:/workspace/qwen-custom/qwen-code/.git --work-tree=D:/workspace/qwen-custom/qwen-code status)",
+      "Bash(pkill:*)"
     ],
     "deny": []
   }

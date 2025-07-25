@@ -33,10 +33,16 @@ export * from './utils/memoryDiscovery.js';
 export * from './utils/gitIgnoreParser.js';
 export * from './utils/editor.js';
 export * from './utils/quotaErrorDetection.js';
+export * from './utils/internalLlmValidator.js';
+export * from './utils/internalLlmErrorHandler.js';
+export * from './utils/streamingManager.js';
+export * from './utils/setupWizard.js';
+export * from './utils/modelManager.js';
 
 // Export services
 export * from './services/fileDiscoveryService.js';
 export * from './services/gitService.js';
+export * from './services/modelSelectionService.js';
 
 // Export base tool definitions
 export * from './tools/tools.js';

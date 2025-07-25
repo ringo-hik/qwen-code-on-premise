@@ -297,13 +297,22 @@ function autoConfigureInternalLlm(): void {
   }
 
   // 환경변수 기반 자동 감지
-  if (process.env.INTERNAL_LLM_BASE_URL || process.env.INTERNAL_LLM_API_KEY || process.env.INTERNAL_LLM_MODEL) {
+  // requirement.md 명세에 맞는 환경변수 검사
+  const hasInternalLlmConfig = process.env.LLM_BASE_URL || process.env.PROXY_SERVER_URL || 
+                              process.env.INTERNAL_LLM_BASE_URL || process.env.INTERNAL_LLM_API_KEY || 
+                              process.env.INTERNAL_LLM_MODEL;
+  
+  if (hasInternalLlmConfig) {
     console.log('🚀 내부망 LLM 모드로 실행합니다.');
     process.env.QWEN_AUTH_TYPE = AuthType.USE_INTERNAL_LLM;
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // SSL 우회 자동 설정
     
-    // 기본값 설정
-    if (!process.env.INTERNAL_LLM_BASE_URL) {
+    // DISABLE_SSL_SKIP이 true가 아닌 경우에만 SSL 우회 적용
+    if (process.env.DISABLE_SSL_SKIP !== 'true') {
+      process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // SSL 우회 자동 설정
+    }
+    
+    // 기본값 설정 (하위호환성 유지)
+    if (!process.env.INTERNAL_LLM_BASE_URL && !process.env.LLM_BASE_URL && !process.env.PROXY_SERVER_URL) {
       process.env.INTERNAL_LLM_BASE_URL = 'http://localhost:8443/devport/api/v1';
     }
     if (!process.env.INTERNAL_LLM_API_KEY) {

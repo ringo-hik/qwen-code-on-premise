@@ -125,9 +125,15 @@ export async function createContentGeneratorConfig(
   }
 
   if (authType === AuthType.USE_INTERNAL_LLM) {
+    // 요구사항 명세에 맞는 환경변수명 사용
+    // 1. LLM_BASE_URL 우선 (내부망 직접 연결)
+    // 2. PROXY_SERVER_URL 차선 (프록시 서버 경유)
+    const baseUrl = process.env.LLM_BASE_URL || process.env.PROXY_SERVER_URL || 
+                   process.env.INTERNAL_LLM_BASE_URL || 'http://localhost:8443/devport/api/v1';
+    
     contentGeneratorConfig.apiKey = process.env.INTERNAL_LLM_API_KEY || 'dummy-key';
     contentGeneratorConfig.model = process.env.INTERNAL_LLM_MODEL || 'internal-llm-model';
-    contentGeneratorConfig.baseUrl = process.env.INTERNAL_LLM_BASE_URL || 'https://localhost:443/devport/api/v1';
+    contentGeneratorConfig.baseUrl = baseUrl;
 
     return contentGeneratorConfig;
   }

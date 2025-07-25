@@ -8,19 +8,53 @@ import React from 'react';
 import { Box, Text } from 'ink';
 import { Colors } from '../colors.js';
 import { SlashCommand } from '../commands/types.js';
+import { isInternalLlmMode } from '@qwen-code/qwen-code-core';
 
 interface Help {
   commands: SlashCommand[];
 }
 
-export const Help: React.FC<Help> = ({ commands }) => (
-  <Box
-    flexDirection="column"
-    marginBottom={1}
-    borderColor={Colors.Gray}
-    borderStyle="round"
-    padding={1}
-  >
+export const Help: React.FC<Help> = ({ commands }) => {
+  const isInternalMode = isInternalLlmMode();
+
+  return (
+    <Box
+      flexDirection="column"
+      marginBottom={1}
+      borderColor={Colors.Gray}
+      borderStyle="round"
+      padding={1}
+    >
+    {/* 내부망 LLM 모드 안내 */}
+    {isInternalMode && (
+      <>
+        <Box
+          borderColor={Colors.AccentPurple}
+          borderStyle="single"
+          padding={1}
+          marginBottom={1}
+        >
+          <Box flexDirection="column">
+            <Text bold color={Colors.AccentPurple}>
+              🔒 내부망 LLM 모드 활성화됨
+            </Text>
+            <Text color={Colors.Foreground}>
+              현재 내부망 LLM 서버를 사용하고 있습니다.
+            </Text>
+            <Text color={Colors.Foreground}>
+              연결 문제가 있는 경우:
+            </Text>
+            <Text color={Colors.AccentPurple}>
+              • /validate - 설정 검증
+            </Text>
+            <Text color={Colors.AccentPurple}>
+              • /diagnose - 빠른 진단
+            </Text>
+          </Box>
+        </Box>
+      </>
+    )}
+
     {/* Basics */}
     <Text bold color={Colors.Foreground}>
       Basics:
@@ -152,4 +186,5 @@ export const Help: React.FC<Help> = ({ commands }) => (
       - Quit application
     </Text>
   </Box>
-);
+  );
+};

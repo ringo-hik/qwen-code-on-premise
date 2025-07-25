@@ -49,6 +49,8 @@
     "test:proxy": "node test-proxy-server.js",
     "start:internal": "node -e \"process.env.QWEN_AUTH_TYPE='internal-llm';process.env.INTERNAL_LLM_BASE_URL='http://localhost:8443/devport/api/v1';process.env.NODE_TLS_REJECT_UNAUTHORIZED='0';require('./scripts/start.js')\"",
     "setup-internal": "node setup-global-internal-llm.js",
+    "setup-wizard": "node enhanced-setup.js",
+    "model-manager": "node model-manager.js",
     "qwen": "npm run bundle && node bundle/gemini.js",
     "install-global": "npm run bundle && npm pack && npm install -g ./qwen-code-qwen-code-0.0.1-alpha.8.tgz && node setup-global-internal-llm.js"
   },

@@ -137,18 +137,33 @@ mv ~/.qwen/.env.backup ~/.qwen/.env  # 글로벌 설정
 
 ## 🐛 문제 해결
 
-### "Connection error" 발생시
-1. 프록시 서버가 실행 중인지 확인: `npm run test:proxy`
-2. 포트 확인: `curl http://localhost:8443/devport/api/v1/chat/completions`
-3. 설정 확인: `.env` 파일의 URL이 정확한지 확인
+### 🆕 자동 진단 도구
 
-### 설정이 적용되지 않을 때
+Qwen Code는 내장된 진단 도구를 제공합니다:
+
 ```bash
+# qwen 실행 후 다음 명령어 사용
+qwen /diagnose    # 빠른 진단
+qwen /validate    # 상세 검증
+```
+
+### 일반적인 문제들
+
+#### "Connection error" 발생시
+1. 자동 진단 실행: `qwen /diagnose`
+2. 프록시 서버 확인: `npm run test:proxy`
+3. 수동 테스트: `curl http://localhost:8443/devport/api/v1/chat/completions`
+
+#### 설정이 적용되지 않을 때
+```bash
+# 설정 검증
+qwen /validate
+
 # 디버그 모드로 실행 (설정 로드 과정 확인)
 DEBUG=1 qwen
 ```
 
-### 글로벌 설치 문제
+#### 글로벌 설치 문제
 ```bash
 # 기존 설치 제거 후 재설치
 npm uninstall -g @qwen-code/qwen-code
@@ -173,12 +188,32 @@ qwen-code/
 - **OpenAI API 호환** - 표준 API 형식 지원
 - **SSL 우회 지원** - 자체 서명 인증서 환경 대응
 - **글로벌/로컬 설정** - 사용자별/프로젝트별 설정 가능
+- **🆕 설정 검증 시스템** - 연결 상태 자동 진단 (`qwen /validate`)
+- **🆕 스마트 에러 처리** - 명확한 문제 해결 가이드 제공
+- **🆕 빠른 진단 도구** - 연결 문제 즉시 파악 (`qwen /diagnose`)
+- **🚀 스트리밍 최적화** - 실시간 응답 스트리밍 지원 및 성능 향상
 
 ## 📚 추가 정보
 
-- **보안**: `NODE_TLS_REJECT_UNAUTHORIZED=0`은 개발/테스트 환경에서만 사용하세요
-- **성능**: 내부망 LLM 응답 속도는 서버 성능에 따라 달라집니다
-- **호환성**: OpenAI API 호환 서버라면 모든 LLM 모델 사용 가능합니다
+### 보안
+- `NODE_TLS_REJECT_UNAUTHORIZED=0`은 개발/테스트 환경에서만 사용하세요
+- API 키는 안전하게 보관하고 공유하지 마세요
+- 프로덕션 환경에서는 유효한 SSL 인증서를 사용하세요
+
+### 성능
+- 내부망 LLM 응답 속도는 서버 성능에 따라 달라집니다
+- 연결 풀링과 캐싱을 통해 성능을 최적화했습니다
+- 대용량 요청 시에는 스트리밍 응답을 권장합니다
+
+### 호환성
+- OpenAI Chat Completions API 호환 서버라면 모든 LLM 모델 사용 가능
+- HTTP/HTTPS 프로토콜 지원
+- 다양한 인증 방식 지원 (Bearer Token, API Key)
+
+### 📖 상세 문서
+- [내부망 LLM 사용 가이드](./docs/internal-llm-guide.md)
+- [아키텍처 문서](./docs/development/internal-llm-architecture.md)
+- [API 참조](./docs/api-reference.md)
 
 ## 🔗 원본 프로젝트
 

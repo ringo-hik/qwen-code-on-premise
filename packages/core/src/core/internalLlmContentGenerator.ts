@@ -16,6 +16,12 @@ import {
   FinishReason,
 } from '@google/genai';
 import { ContentGenerator, ContentGeneratorConfig } from './contentGenerator.js';
+import { 
+  analyzeAndCreateInternalLlmError,
+  performQuickDiagnosis,
+  InternalLlmError,
+} from '../utils/internalLlmErrorHandler.js';
+import { StreamingManager } from '../utils/streamingManager.js';
 
 // SSL 우회 설정
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -23,11 +29,19 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 export class InternalLlmContentGenerator implements ContentGenerator {
   private config: ContentGeneratorConfig;
   private httpsAgent: https.Agent;
+  private streamingManager: StreamingManager;
 
   constructor(config: ContentGeneratorConfig) {
     this.config = config;
     this.httpsAgent = new https.Agent({
       rejectUnauthorized: false, // SSL 인증서 검증 비활성화
+    });
+    
+    // 스트리밍 매니저 초기화
+    this.streamingManager = new StreamingManager({
+      baseUrl: config.baseUrl || 'http://localhost:8443/devport/api/v1',
+      apiKey: config.apiKey || '',
+      model: config.model || 'default',
     });
   }
 
@@ -47,19 +61,50 @@ export class InternalLlmContentGenerator implements ContentGenerator {
       const response = await this.makeApiRequest('/chat/completions', requestBody);
       return this.convertFromOpenAIFormat(response);
     } catch (error) {
-      console.error('[INTERNAL_LLM] API 요청 실패:', error);
-      throw error;
+      const internalLlmError = analyzeAndCreateInternalLlmError(
+        error instanceof Error ? error : new Error(String(error)),
+        { url: this.config.baseUrl }
+      );
+      
+      console.error('[INTERNAL_LLM] API 요청 실패:');
+      console.error(internalLlmError.getDetailedDiagnostic());
+      
+      throw internalLlmError;
     }
   }
 
   async generateContentStream(
     request: GenerateContentParameters,
   ): Promise<AsyncGenerator<GenerateContentResponse>> {
-    // 스트리밍은 일단 일반 응답으로 처리
-    const response = await this.generateContent(request);
-    return (async function* () {
-      yield response;
-    })();
+    try {
+      // OpenAI 형식으로 변환
+      const messages = this.convertToOpenAIFormat(request);
+      const requestBody = {
+        model: this.config.model,
+        messages: messages,
+        stream: true,
+        max_tokens: 2000,
+        temperature: 0.7,
+      };
+
+      // 스트리밍 매니저를 사용하여 실시간 응답 처리
+      return this.streamingManager.generateStream(requestBody);
+      
+    } catch (error) {
+      const internalLlmError = analyzeAndCreateInternalLlmError(
+        error instanceof Error ? error : new Error(String(error)),
+        { url: this.config.baseUrl }
+      );
+      
+      console.error('[INTERNAL_LLM] 스트리밍 실패:');
+      console.error(internalLlmError.getDetailedDiagnostic());
+      
+      // 에러 발생 시 폴백으로 일반 응답 사용
+      const fallbackResponse = await this.generateContent(request);
+      return (async function* () {
+        yield fallbackResponse;
+      })();
+    }
   }
 
   async countTokens(request: CountTokensParameters): Promise<CountTokensResponse> {
@@ -160,20 +205,50 @@ export class InternalLlmContentGenerator implements ContentGenerator {
             if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
               resolve(response);
             } else {
-              reject(new Error(`API 요청 실패: ${res.statusCode} ${data}`));
+              const error = new Error(`API 요청 실패: ${res.statusCode} ${data}`);
+              const internalLlmError = analyzeAndCreateInternalLlmError(error, {
+                url,
+                statusCode: res.statusCode,
+              });
+              reject(internalLlmError);
             }
           } catch (error) {
-            reject(new Error(`JSON 파싱 실패: ${data}`));
+            const parseError = new Error(`JSON 파싱 실패: ${data}`);
+            const internalLlmError = analyzeAndCreateInternalLlmError(parseError, {
+              url,
+              statusCode: res.statusCode,
+            });
+            reject(internalLlmError);
           }
         });
       });
 
       req.on('error', (error) => {
-        reject(new Error(`네트워크 오류: ${error.message}`));
+        const networkError = new Error(`네트워크 오류: ${error.message}`);
+        const internalLlmError = analyzeAndCreateInternalLlmError(networkError, { url });
+        reject(internalLlmError);
       });
 
       req.write(requestData);
       req.end();
     });
+  }
+
+  // 스트리밍 연결 상태 확인
+  async isStreamingHealthy(): Promise<boolean> {
+    return this.streamingManager.healthCheck();
+  }
+
+  // 성능 메트릭 조회
+  getStreamingMetrics() {
+    return this.streamingManager.getMetrics();
+  }
+
+  // 리소스 정리
+  cleanup(): void {
+    this.streamingManager.cleanup();
+    if (this.httpsAgent) {
+      this.httpsAgent.destroy();
+    }
   }
 }
