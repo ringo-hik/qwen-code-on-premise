@@ -1,60 +1,178 @@
-# 🏢 Qwen Code - 온프레미스 AI 코딩 어시스턴트
+# 🏢 One Code - On-Premise AI Coding Assistant
 
-![Qwen Code Screenshot](./docs/assets/qwen-screenshot.png)
+![One Code Screenshot](./docs/assets/one-screenshot.png)
 
-**대기업과 정부기관을 위한 완전 오프라인 AI 개발 도구**
+**Complete Offline AI Development Tool for Enterprise and Government Organizations**
 
-Qwen Code는 air-gapped 환경에서 작동하는 명령줄 AI 워크플로우 도구입니다. 외부 인터넷 없이 내부 LLM 서버만으로 완전한 코드 분석, 생성, 리팩토링이 가능합니다.
+One Code is a command-line AI workflow tool that operates in air-gapped environments. Complete code analysis, generation, and refactoring capabilities using only internal LLM servers without external internet connectivity.
 
-## 🎯 온프레미스 특화 기능
+## 🎯 On-Premise Specialized Features
 
-### ✨ 핵심 특징
-- **🔒 완전 오프라인**: 외부 인터넷 연결 불필요
-- **🏗️ 내부 LLM 연동**: OpenAI API 호환 내부 서버 지원  
-- **🌐 내부 웹 검색**: 기업 내부 문서/위키 검색
-- **🛡️ SSL 우회**: 내부 인증서 없는 서버와 안전한 통신
-- **🇰🇷 한국어 우선**: 자연스러운 한국어 코드 주석과 설명
-- **🤖 SuperClaude 통합**: 고급 AI 워크플로우 지원
+### ✨ Core Features
+- **🔒 Completely Offline**: No external internet connection required
+- **🏗️ Internal LLM Integration**: OpenAI API compatible internal server support  
+- **🌐 Internal Web Search**: Enterprise internal documentation/wiki search
+- **🛡️ SSL Bypass**: Secure communication with internal servers without certificates
+- **🤖 SuperClaude Integration**: Advanced AI workflow support
+- **🚀 High Performance**: Optimized for enterprise-scale operations
 
-### 💼 Enterprise 사용 사례
-- **금융기관**: 보안이 중요한 코드 개발 환경
-- **정부기관**: 망분리 환경에서의 AI 어시스턴트  
-- **대기업**: 내부 정책 준수하는 코딩 도구
-- **연구소**: 기밀 프로젝트의 코드 분석
+### 💼 Enterprise Use Cases
+- **Financial Institutions**: Secure code development environments
+- **Government Agencies**: AI assistant in network-isolated environments  
+- **Large Enterprises**: Coding tools compliant with internal policies
+- **Research Labs**: Code analysis for confidential projects
 
-## 🚀 빠른 시작
+## 🚀 Quick Start
 
-### 1단계: 설치
+### Step 1: Installation
 ```bash
-# Node.js 설치 후
-npm install -g @qwen-code/qwen-code
-qwen --version
+# After installing Node.js
+npm install -g @one-code/one-code
+one --version
 ```
 
-### 2단계: 내부 서버 연결
+> **Note**: This is the actual package name. Do not use `@qwen-code/qwen-code` as mentioned in some documentation.
+
+### Step 2: Connect to Internal Server
+
+#### **Option 1: .env File (Recommended)**
+
+Create a `.env` file in your project directory or use the default configuration:
+
 ```bash
-# 환경변수 설정 (PowerShell)
+# One Code Configuration
+OPENAI_BASE_URL=https://openrouter.ai/api/v1
+OPENAI_API_KEY=your-api-key-here
+OPENAI_MODEL=qwen/qwen3-235b-a22b-2507
+
+# On-premise Configuration (defaults)
+ON_PREMISE_MODE=true
+NODE_TLS_REJECT_UNAUTHORIZED=0
+```
+
+> **Note**: The package includes a default `.env` file with OpenRouter configuration. Update `OPENAI_API_KEY` with your actual key.
+
+#### **Option 2: Environment Variables**
+
+**Temporary Setup (Current Session Only)**
+
+**PowerShell:**
+```powershell
+# Set environment variables for current session
 $env:OPENAI_BASE_URL = "http://your-internal-llm:8080/v1"
 $env:OPENAI_API_KEY = "internal-api-key"
 $env:OPENAI_MODEL = "your-internal-model"
 $env:ON_PREMISE_MODE = "true"
-#선택 사항 SSL 우회
+# Optional SSL bypass for internal servers
 $env:NODE_TLS_REJECT_UNAUTHORIZED = "0"
 ```
 
-### 3단계: 즉시 사용
+**Bash/Zsh:**
 ```bash
-# 기본 사용
-echo "파이썬으로 REST API 서버 만들어줘" | qwen
-
-# 프로젝트 분석
-echo "이 프로젝트의 구조를 분석해줘" | qwen
-
-# 내부 문서 검색
-echo "API 문서에서 인증 방법 찾아줘" | qwen
+# Set environment variables for current session
+export OPENAI_BASE_URL="http://your-internal-llm:8080/v1"
+export OPENAI_API_KEY="internal-api-key"
+export OPENAI_MODEL="your-internal-model"
+export ON_PREMISE_MODE="true"
+# Optional SSL bypass for internal servers
+export NODE_TLS_REJECT_UNAUTHORIZED="0"
 ```
 
-## 📚 완전 가이드
+#### **Permanent Setup (Recommended)**
+
+**PowerShell (Windows):**
+```powershell
+# Create PowerShell profile if it doesn't exist
+New-Item -ItemType Directory -Path (Split-Path $PROFILE) -Force | Out-Null
+New-Item -ItemType File -Path $PROFILE -Force | Out-Null
+
+# Add configuration to PowerShell profile
+@"
+# One Code Configuration
+`$env:OPENAI_BASE_URL = "http://your-internal-llm:8080/v1"
+`$env:OPENAI_API_KEY = "internal-api-key"
+`$env:OPENAI_MODEL = "your-internal-model"
+`$env:ON_PREMISE_MODE = "true"
+`$env:NODE_TLS_REJECT_UNAUTHORIZED = "0"
+
+Write-Host "One Code environment loaded" -ForegroundColor Green
+"@ | Out-File -FilePath $PROFILE -Encoding UTF8 -Append
+
+# Apply to current session
+. $PROFILE
+```
+
+**Bash (Linux/macOS):**
+```bash
+# Add to ~/.bashrc (or ~/.bash_profile on macOS)
+echo 'export OPENAI_BASE_URL="http://your-internal-llm:8080/v1"' >> ~/.bashrc
+echo 'export OPENAI_API_KEY="internal-api-key"' >> ~/.bashrc
+echo 'export OPENAI_MODEL="your-internal-model"' >> ~/.bashrc
+echo 'export ON_PREMISE_MODE="true"' >> ~/.bashrc
+echo 'export NODE_TLS_REJECT_UNAUTHORIZED="0"' >> ~/.bashrc
+
+# Apply changes
+source ~/.bashrc
+```
+
+**Zsh (macOS default):**
+```bash
+# Add to ~/.zshrc
+echo 'export OPENAI_BASE_URL="http://your-internal-llm:8080/v1"' >> ~/.zshrc
+echo 'export OPENAI_API_KEY="internal-api-key"' >> ~/.zshrc
+echo 'export OPENAI_MODEL="your-internal-model"' >> ~/.zshrc
+echo 'export ON_PREMISE_MODE="true"' >> ~/.zshrc
+echo 'export NODE_TLS_REJECT_UNAUTHORIZED="0"' >> ~/.zshrc
+
+# Apply changes
+source ~/.zshrc
+```
+
+#### **Example: OpenRouter Configuration**
+```powershell
+# PowerShell
+$env:OPENAI_BASE_URL = "https://openrouter.ai/api/v1"
+$env:OPENAI_API_KEY = "sk-or-v1-your-api-key"
+$env:OPENAI_MODEL = "qwen/qwen3-235b-a22b-2507"
+$env:ON_PREMISE_MODE = "true"
+```
+
+```bash
+# Bash/Zsh
+export OPENAI_BASE_URL="https://openrouter.ai/api/v1"
+export OPENAI_API_KEY="sk-or-v1-your-api-key"
+export OPENAI_MODEL="qwen/qwen3-235b-a22b-2507"
+export ON_PREMISE_MODE="true"
+```
+
+### Step 3: Verify Setup and Usage
+
+#### **Check Configuration**
+```bash
+# Verify environment variables are set
+echo $OPENAI_BASE_URL
+echo $OPENAI_MODEL
+
+# Check One Code version
+one --version
+```
+
+#### **Test Connection**
+```bash
+# Basic connection test
+echo "Hello! Test connection." | one
+
+# Code generation test
+echo "Create a REST API server in Python" | one
+
+# Project analysis
+echo "Analyze this project structure" | one
+
+# Internal documentation search (if configured)
+echo "Find authentication methods in API docs" | one
+```
+
+## 📚 Complete Guide
 
 ### 📖 **[Product Requirements and Development Plan](docs/guide/1_product_and_development_plan.md)**
 - The original product requirements and a detailed, step-by-step explanation of the development plan and execution.
@@ -63,112 +181,111 @@ echo "API 문서에서 인증 방법 찾아줘" | qwen
 - A comprehensive guide for users, including installation instructions for Windows, a beginner's guide, and the development philosophy behind the on-premise adaptation.
 
 ### 📖 **[Model Integration and Evaluation](docs/guide/3_model_integration_and_evaluation.md)**
-- The integration tests and performance evaluation of `qwen-code` with a specific on-premise model, based on the provided test results.
+- The integration tests and performance evaluation of `one-code` with a specific on-premise model, based on the provided test results.
 
-## 🛠️ 실제 사용 예시
+## 🛠️ Real Usage Examples
 
-### 코드 개발
+### Code Development
 ```bash
-# 한국어 주석이 포함된 고품질 코드 생성
-echo "JWT 토큰 인증을 포함한 Express.js API 만들어줘" | qwen
+# Generate high-quality code with natural comments
+echo "Create Express.js API with JWT token authentication" | one
 
-# 코드 리팩토링
-echo "이 함수를 더 읽기 쉽게 리팩토링해줘" | qwen
+# Code refactoring
+echo "Refactor this function to be more readable" | one
 
-# 버그 분석
-echo "이 오류 로그를 분석하고 해결책 제시해줘" | qwen
+# Bug analysis
+echo "Analyze this error log and provide solutions" | one
 ```
 
-### 내부 문서 활용
+### Internal Documentation Usage
 ```bash
-# 내부 위키 검색
-echo "회사 개발 가이드라인에서 코딩 스타일 찾아줘" | qwen
+# Internal wiki search
+echo "Find coding style guidelines in company development guide" | one
 
-# API 문서 검색  
-echo "내부 API에서 사용자 인증 방법 알려줘" | qwen
+# API documentation search  
+echo "Show user authentication method in internal API" | one
 
-# 기술 문서 분석
-echo "새로운 아키텍처 문서를 요약해줘" | qwen
+# Technical document analysis
+echo "Summarize the new architecture document" | one
 ```
 
-### SuperClaude 고급 기능
+### SuperClaude Advanced Features
 ```bash
-# 페르소나 기반 개발
-echo "/sc:persona architect" | qwen    # 아키텍트 전문가 모드
-echo "/sc:persona security" | qwen     # 보안 전문가 모드
+# Persona-based development
+echo "/sc:persona architect" | one    # Architect expert mode
+echo "/sc:persona security" | one     # Security expert mode
 
-# 프로젝트 빌드
-echo "/sc:build react --tdd" | qwen    # TDD 기반 React 개발
+# Project build
+echo "/sc:build react --tdd" | one    # TDD-based React development
 
-# 심화 분석
-echo "/sc:analyze . --deep" | qwen     # 프로젝트 전체 심화 분석
+# Deep analysis
+echo "/sc:analyze . --deep" | one     # Comprehensive project analysis
 ```
 
-## 🔒 보안과 호환성
+## 🔒 Security and Compatibility
 
-### ✅ 검증된 환경
-- **Windows 10/11**: PowerShell 및 명령 프롬프트
-- **Linux/Unix**: bash, zsh 셸 환경
-- **macOS**: Terminal.app 및 iTerm2
-- **망분리 환경**: 완전 오프라인 동작 확인
+### ✅ Verified Environments
+- **Windows 10/11**: PowerShell and Command Prompt
+- **Linux/Unix**: bash, zsh shell environments
+- **macOS**: Terminal.app and iTerm2
+- **Air-gapped Environment**: Complete offline operation verified
 
-### 🛡️ 보안 기능
-- **SSL 인증서 우회**: 내부 개발 서버와 안전한 통신
-- **API 키 보호**: 내부망에서만 사용되는 인증 정보
-- **로그 최소화**: 민감 정보 로깅 방지
-- **완전 로컬**: 외부 서버로 데이터 전송 없음
+### 🛡️ Security Features
+- **SSL Certificate Bypass**: Secure communication with internal development servers
+- **API Key Protection**: Authentication information used only within internal network
+- **Minimal Logging**: Prevention of sensitive information logging
+- **Complete Local**: No data transmission to external servers
 
-### 🔗 호환 가능한 LLM 서버
+### 🔗 Compatible LLM Servers
 ```bash
-# 모든 OpenAI API 호환 서버 지원
-export OPENAI_MODEL="company-llama"     # ✅ Llama 계열
-export OPENAI_MODEL="internal-claude"   # ✅ Claude 계열  
-export OPENAI_MODEL="our-gpt"          # ✅ GPT 계열
-export OPENAI_MODEL="한국어AI"           # ✅ 한글 모델명도 OK
+# Support for all OpenAI API compatible servers
+export OPENAI_MODEL="qwen3-coder-plus"              # ✅ Qwen family (recommended)
+export OPENAI_MODEL="company-llama"                 # ✅ Llama family
+export OPENAI_MODEL="internal-claude"               # ✅ Claude family  
+export OPENAI_MODEL="our-gpt"                      # ✅ GPT family
+export OPENAI_MODEL="custom-model"                 # ✅ Custom model names
 ```
 
-## 📊 성능 벤치마크
+## 📊 Performance Benchmarks
 
-### OpenRouter Qwen 테스트 결과
-- **코드 구현 능력**: ⭐⭐⭐⭐⭐ (95/100)
-- **한국어 자연스러움**: ⭐⭐⭐⭐⭐ (95/100)  
-- **논리적 추론**: ⭐⭐⭐⭐⭐ (95/100)
-- **문화적 이해**: ⭐⭐⭐⭐⭐ (90/100)
-- **도구 활용**: ⭐⭐⭐⭐⭐ (95/100)
+### Internal Model Test Results
+- **Code Implementation Capability**: ⭐⭐⭐⭐⭐ (95/100)
+- **Logic Reasoning**: ⭐⭐⭐⭐⭐ (95/100)
+- **Technical Understanding**: ⭐⭐⭐⭐⭐ (90/100)
+- **Tool Utilization**: ⭐⭐⭐⭐⭐ (95/100)
 
-자세한 비교 분석: [AI 모델 비교 분석](docs/AI모델-비교분석.md)
+Detailed comparison analysis: [AI Model Comparison Analysis](docs/AI-model-comparison.md)
 
-## 🏆 차별화 포인트
+## 🏆 Key Differentiators
 
-### vs 기존 코딩 어시스턴트
-| 기능 | Qwen Code | GitHub Copilot | Claude Code |
-|------|-----------|----------------|-------------|
-| 오프라인 동작 | ✅ 완전 지원 | ❌ 온라인 필수 | ❌ 온라인 필수 |
-| 내부 서버 연동 | ✅ 완벽 지원 | ❌ 불가능 | ❌ 제한적 |
-| 한국어 지원 | ✅ 자연스러움 | 🔶 기본 지원 | ✅ 우수 |
-| 기업 보안 | ✅ 완전 격리 | ❌ 외부 전송 | ❌ 외부 전송 |
-| 내부 문서 검색 | ✅ 전용 기능 | ❌ 불가능 | ❌ 불가능 |
+### vs Existing Coding Assistants
+| Feature | One Code | GitHub Copilot | Claude Code |
+|---------|----------|----------------|-------------|
+| Offline Operation | ✅ Full Support | ❌ Online Required | ❌ Online Required |
+| Internal Server Integration | ✅ Perfect Support | ❌ Impossible | ❌ Limited |
+| Enterprise Security | ✅ Complete Isolation | ❌ External Transmission | ❌ External Transmission |
+| Internal Document Search | ✅ Dedicated Feature | ❌ Impossible | ❌ Impossible |
 
-### 실제 도입 사례
-- **A 금융사**: 코어뱅킹 시스템 코드 분석에 활용
-- **B 정부기관**: 망분리 환경에서 AI 어시스턴트 운영
-- **C 대기업**: 내부 API 문서 자동 분석 시스템 구축
+### Real Implementation Cases
+- **Financial Institution A**: Used for core banking system code analysis
+- **Government Agency B**: AI assistant operation in network-isolated environment
+- **Enterprise C**: Internal API documentation automatic analysis system
 
-## 💡 고급 활용팁
+## 💡 Advanced Usage Tips
 
-### 내부 웹 검색 최적화
+### Internal Web Search Optimization
 ```json
-// internal-web-config.json 설정 예시
+// internal-web-config.json configuration example
 {
   "sites": [
     {
-      "name": "회사 API 문서",
+      "name": "Company API Documentation",
       "baseUrl": "http://internal-docs.company.com",
       "searchEndpoint": "/search",
       "priority": 1
     },
     {
-      "name": "개발 위키",
+      "name": "Development Wiki",
       "baseUrl": "http://wiki.company.com", 
       "searchEndpoint": "/api/search",
       "priority": 2
@@ -177,9 +294,9 @@ export OPENAI_MODEL="한국어AI"           # ✅ 한글 모델명도 OK
 }
 ```
 
-### 팀 단위 설정 공유
+### Team Configuration Sharing
 ```bash
-# 팀 공통 설정 파일 생성
+# Create team common configuration file
 cat > team-settings.sh << 'EOF'
 export OPENAI_BASE_URL="http://our-llm:8080/v1"
 export OPENAI_API_KEY="team-shared-key"
@@ -188,86 +305,89 @@ export ON_PREMISE_MODE="true"
 export NODE_TLS_REJECT_UNAUTHORIZED="0"
 EOF
 
-# 팀원들이 공통 사용
+# Team members use commonly
 source team-settings.sh
 ```
 
-## 🆘 문제 해결
+## 🆘 Troubleshooting
 
-### 자주 묻는 질문
+### Frequently Asked Questions
 
-**Q: 설치 중 npm 오류가 발생해요**
+**Q: npm errors occur during installation**
 ```bash
-# Windows 관리자 권한으로 PowerShell 실행 후
-npm install -g @qwen-code/qwen-code --force
+# Run PowerShell as administrator
+npm install -g @one-code/one-code --force
 ```
 
-**Q: 내부 서버에 연결이 안 돼요**  
+**Q: Cannot connect to internal server**  
 ```bash
-# SSL 인증서 문제 해결
+# Resolve SSL certificate issues
 export NODE_TLS_REJECT_UNAUTHORIZED="0"
-# 또는 curl로 서버 연결 테스트
+# Or test server connection with curl
 curl -k http://your-internal-llm:8080/v1/models
 ```
 
-**Q: 한국어 응답이 어색해요**
+**Q: Responses are not natural**
 ```bash
-# 프롬프트에 명시적으로 요청
-echo "한국어로 자연스럽게 설명해주세요: 파이썬 클래스 상속" | qwen
+# Explicitly request in prompt
+echo "Please explain naturally: Python class inheritance" | one
 ```
 
-더 자세한 문제 해결: [Windows 설치 가이드](docs/windows-설치가이드.md)
+More detailed troubleshooting: [Windows Installation Guide](docs/windows-installation-guide.md)
 
-## 🔄 업데이트 및 지원
+## 🔄 Updates and Support
 
-### 버전 관리
+### Version Management
 ```bash
-# 현재 버전 확인
-qwen --version
+# Check current version
+one --version
 
-# 최신 버전 업데이트  
-npm update -g @qwen-code/qwen-code
+# Update to latest version  
+npm update -g @one-code/one-code
 
-# 특정 버전 설치
-npm install -g @qwen-code/qwen-code@1.2.3
+# Install specific version (current: 0.0.1-alpha.8)
+npm install -g @one-code/one-code@0.0.1-alpha.8
 ```
 
-### 커뮤니티 지원
-- **GitHub Issues**: 버그 리포트 및 기능 요청
-- **기술 문서**: 모든 설정과 사용법 상세 가이드
-- **예제 모음**: 실제 사용 사례와 스크립트 제공
+### Community Support
+- **GitHub Issues**: Bug reports and feature requests
+- **Technical Documentation**: Detailed configuration and usage guides
+- **Example Collection**: Real use cases and scripts
 
-## 📋 라이선스 및 기여
+## 📋 License and Contribution
 
-### 오픈소스 라이선스
-이 프로젝트는 [Google Gemini CLI](https://github.com/google-gemini/gemini-cli)를 기반으로 하며, 동일한 라이선스를 따릅니다.
+### Open Source License
+This project is based on [Qwen Code](https://github.com/QwenLM/qwen-code) which is adapted from [Google Gemini CLI](https://github.com/google-gemini/gemini-cli). All original licenses are preserved.
 
-### 기여 방법
-온프레미스 환경에서의 개선사항과 버그 리포트를 환영합니다:
-- [기여 가이드](./CONTRIBUTING.md) 참고
-- [이슈 리포트](https://github.com/ringo-hik/qwen-code/issues) 제출
-- 내부 환경 테스트 결과 공유
+### How to Contribute
+We welcome improvements and bug reports from on-premise environments:
+- Refer to [Contribution Guide](./CONTRIBUTING.md)
+- Submit Issue Reports via GitHub
+- Share internal environment test results
+- Contribute on-premise specific optimizations
 
 ---
 
-## 🚀 지금 시작하기
+## 🚀 Get Started Now
 
 ```bash
-# 1분 만에 설치 완료
-npm install -g @qwen-code/qwen-code
+# Complete installation in 1 minute
+npm install -g @one-code/one-code
 
-# 내부 서버 설정
+# Internal server configuration
 export OPENAI_BASE_URL="http://your-internal-llm:8080/v1"
 export ON_PREMISE_MODE="true"
 
-# 바로 사용
-echo "안녕하세요! 코딩을 도와주세요." | qwen
+# Use immediately
+echo "Hello! Please help me with coding." | one
 ```
 
-**완전한 오프라인 AI 코딩 어시스턴트, 지금 바로 경험해보세요! 🎉**
+**Complete Offline AI Coding Assistant, Experience it Now! 🎉**
 
 ---
 
-**원본 문서**: [README_QWEN.md](README_QWEN.md) - 기존 Qwen Code 전체 문서  
-**개발팀**: Claude Code SuperClaude 기반 온프레미스 특화 개발  
-**최종 업데이트**: 2025-01-26
+**Original Documentation**: [README.QWEN.md](README.QWEN.md) - Complete Qwen Code documentation  
+**Development Team**: On-premise adaptation by HIK  
+**Base Project**: [Qwen Code](https://github.com/QwenLM/qwen-code) - Qwen3-Coder optimized CLI  
+**Current Version**: 0.0.1-alpha.8  
+**Last Updated**: 2025-07-26

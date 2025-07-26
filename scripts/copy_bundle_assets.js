@@ -37,4 +37,26 @@ for (const file of sbFiles) {
   copyFileSync(join(root, file), join(bundleDir, basename(file)));
 }
 
+// Copy .env file to bundle directory
+const envSource = join(root, '.env');
+const envDest = join(bundleDir, '.env');
+
+if (existsSync(envSource)) {
+  copyFileSync(envSource, envDest);
+  console.log('✅ Copied .env to bundle directory');
+} else {
+  console.log('⚠️  .env file not found, skipping copy');
+}
+
+// Copy internal-web-config.json if exists
+const configSource = join(root, 'internal-web-config.json');
+const configDest = join(bundleDir, 'internal-web-config.json');
+
+if (existsSync(configSource)) {
+  copyFileSync(configSource, configDest);
+  console.log('✅ Copied internal-web-config.json to bundle directory');
+} else {
+  console.log('ℹ️  internal-web-config.json not found, skipping copy');
+}
+
 console.log('Assets copied to bundle/');

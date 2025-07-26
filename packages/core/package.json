@@ -17,7 +17,8 @@
     "typecheck": "tsc --noEmit"
   },
   "files": [
-    "dist"
+    "dist",
+    ".env"
   ],
   "dependencies": {
     "@google/genai": "1.8.0",
