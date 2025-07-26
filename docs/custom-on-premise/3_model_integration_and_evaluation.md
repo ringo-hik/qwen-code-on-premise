@@ -3,9 +3,9 @@
 
 ## 3.1. Integration Test Report
 
-This report details the results of the integration tests conducted to validate the on-premise functionality of `qwen-code` with the **`qwen/qwen3-235b-a22b-2507`** model, accessed via an OpenRouter-compatible API endpoint.
+This report details the results of the integration tests conducted to validate the on-premise functionality of `one-code` with the **`qwen/qwen3-235b-a22b-2507`** model, accessed via an OpenRouter-compatible API endpoint.
 
-*   **Test Date:** 2025-01-26
+*   **Test Date:** 2025-07-26
 *   **Model:** `qwen/qwen3-235b-a22b-2507`
 *   **Environment:** Windows 10, PowerShell
 
@@ -21,7 +21,7 @@ This report details the results of the integration tests conducted to validate t
 | Test Case | Description | Status | Notes |
 | :--- | :--- | :--- | :--- |
 | **API-01** | Direct API Connection | ✅ **Pass** | Successfully received a Korean response from the model via `curl`. |
-| **CLI-01** | Basic CLI Integration | ✅ **Pass** | The `qwen` command successfully processed a simple prompt and returned the model's response. |
+| **CLI-01** | Basic CLI Integration | ✅ **Pass** | The `one` command successfully processed a simple prompt and returned the model's response. |
 | **CODE-01**| Code Generation | ✅ **Pass** | Generated a high-quality Python function for Fibonacci sequence, complete with Korean comments and usage examples. |
 | **TOOL-01**| Internal Tool Use | ✅ **Pass** | The `Glob` and `ReadManyFiles` tools were successfully used to analyze the project's own documentation. |
 | **WEB-01** | Internal Web Search | ✅ **Pass** | Successfully selected the correct internal URL based on a natural language query and extracted relevant information. |
@@ -34,7 +34,7 @@ This report details the results of the integration tests conducted to validate t
 
 ### **Conclusion:**
 
-The integration of `qwen-code` with the `qwen/qwen3-235b-a22b-2507` model in an on-premise configuration is a **complete success**. All core functionalities, including LLM communication, code generation, and the custom internal web search, are fully operational.
+The integration of `one-code` with the `qwen/qwen3-235b-a22b-2507` model in an on-premise configuration is a **complete success**. All core functionalities, including LLM communication, code generation, and the custom internal web search, are fully operational.
 
 ---
 
@@ -47,7 +47,7 @@ This evaluation assesses the performance of the Qwen model in key areas relevant
 1.  **Complex Code Implementation:** Ability to generate correct, well-structured, and documented code.
 2.  **Logical Reasoning:** Ability to solve logic puzzles and explain the reasoning.
 3.  **Cultural Context (Korean):** Understanding of Korean business and development culture.
-4.  **Tool Utilization:** Effective use of the available tools within the `qwen-code` environment.
+4.  **Tool Utilization:** Effective use of the available tools within the `one-code` environment.
 
 ### **Scenario 1: Complex Code Implementation (Binary Search Tree)**
 
@@ -104,4 +104,4 @@ This evaluation assesses the performance of the Qwen model in key areas relevant
 
 ### **Final Recommendation:**
 
-**The `qwen/qwen3-235b-a22b-2507` model is an outstanding choice for an on-premise AI coding assistant, particularly for Korean-speaking development teams.** Its strengths in code generation, logical reasoning, and cultural context make it a highly effective tool for over 90% of day-to-day development tasks. When paired with the `qwen-code` environment, it provides a powerful and secure workflow that is ready for enterprise deployment.
+**The `qwen/qwen3-235b-a22b-2507` model is an outstanding choice for an on-premise AI coding assistant, particularly for Korean-speaking development teams.** Its strengths in code generation, logical reasoning, and cultural context make it a highly effective tool for over 90% of day-to-day development tasks. When paired with the `one-code` environment, it provides a powerful and secure workflow that is ready for enterprise deployment.

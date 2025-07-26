@@ -271,6 +271,25 @@ export function loadEnvironment(): void {
   if (envFilePath) {
     dotenv.config({ path: envFilePath, quiet: true });
   }
+
+  // Load global package .env if available (for npm install -g)
+  try {
+    const packageDir = path.dirname(path.dirname(path.dirname(__dirname)));
+    const globalEnvPath = path.join(packageDir, '.env');
+    if (fs.existsSync(globalEnvPath)) {
+      dotenv.config({ path: globalEnvPath, quiet: true });
+    }
+  } catch (error) {
+    // Silently ignore if global .env is not found
+  }
+
+  // Set default values for on-premise mode
+  if (!process.env.ON_PREMISE_MODE) {
+    process.env.ON_PREMISE_MODE = 'true';
+  }
+  if (!process.env.NODE_TLS_REJECT_UNAUTHORIZED) {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+  }
 }
 
 /**

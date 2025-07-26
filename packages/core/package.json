@@ -1,7 +1,7 @@
 {
   "name": "@qwen-code/qwen-code-core",
   "version": "0.0.1-alpha.8",
-  "description": "Qwen Code Core",
+  "description": "One Code Core",
   "repository": {
     "type": "git",
     "url": "git+http://gitlab.alibaba-inc.com/Qwen-Coder/qwen-code.git"
@@ -17,7 +17,8 @@
     "typecheck": "tsc --noEmit"
   },
   "files": [
-    "dist"
+    "dist",
+    ".env"
   ],
   "dependencies": {
     "@google/genai": "1.8.0",

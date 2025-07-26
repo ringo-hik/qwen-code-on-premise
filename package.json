@@ -48,12 +48,13 @@
     "clean": "node scripts/clean.js"
   },
   "bin": {
-    "qwen": "bundle/gemini.js"
+    "one": "bundle/gemini.js"
   },
   "files": [
     "bundle/",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    ".env"
   ],
   "devDependencies": {
     "@types/micromatch": "^4.0.9",

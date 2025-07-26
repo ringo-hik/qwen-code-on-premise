@@ -11,7 +11,7 @@
 
 The `web_search` tool cannot use the Google API. It must be modified to use a predefined list of internal URLs. This list should be managed in a separate configuration file containing URL-description pairs. The tool should intelligently select the appropriate URL based on the user's query and the description.
 
-The key is **simplicity**. The goal is a Proof of Concept (PoC) to demonstrate that a coding agent can run in our internal network with minimal or no code changes. The ideal scenario is: a user installs the tool with a single command, configures it with environment variables, and then uses the `qwen` command seamlessly. The tool should automatically connect to the internal LLM and use the internal URL list for web-related queries."
+The key is **simplicity**. The goal is a Proof of Concept (PoC) to demonstrate that a coding agent can run in our internal network with minimal or no code changes. The ideal scenario is: a user installs the tool with a single command, configures it with environment variables, and then uses the `one` command seamlessly. The tool should automatically connect to the internal LLM and use the internal URL list for web-related queries."
 
 ### **Project Goal:**
 
@@ -42,19 +42,19 @@ To create a PoC of the `qwen-code` AI coding assistant that operates in a closed
     *   **Implementation:**
         *   Single-command installation via `npm`.
         *   Configuration managed entirely through environment variables.
-        *   No changes to the existing `qwen` command-line interface.
+        *   No changes to the existing `one` command-line interface.
     *   **Priority:** Critical (P0).
 
 ### **Success Criteria:**
 
 *   **PoC Success:**
     *   Successful communication with the internal LLM server.
-    *   Core `qwen` commands are fully functional.
+    *   Core `one` commands are fully functional.
     *   At least one successful web search using the internal URL list.
 *   **End-to-End Scenario:**
     1.  A user installs the package with `npm install -g`.
     2.  The user sets the required environment variables.
-    3.  The user runs a command like `qwen "Find the authentication method in the API docs."`
+    3.  The user runs a command like `one "Find the authentication method in the API docs."`
     4.  The tool connects to the internal LLM, performs a search on the internal web, and provides a relevant answer.
 
 ---
@@ -127,8 +127,8 @@ This phase focused on the three primary technical requirements.
     *   Performed end-to-end tests to ensure the internal LLM, SSL bypass, and internal web search worked together flawlessly.
 *   **Task 3.2: Scenario Testing (2 Hours)**
     *   Executed real-world scenarios, such as:
-        *   `qwen "Find the authentication method in our API documentation."`
-        *   `qwen "Summarize the React development guidelines from the company wiki."`
+        *   `one "Find the authentication method in our API documentation."`
+        *   `one "Summarize the React development guidelines from the company wiki."`
     *   **Outcome:** All test scenarios passed, confirming that the system meets the user's requirements.
 
 ### **Phase 4: Packaging and Documentation (4 Hours)**

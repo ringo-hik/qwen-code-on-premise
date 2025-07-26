@@ -23,7 +23,7 @@ By adhering to these principles, we created a solution that is not only function
 
 ## 2.2. Installation and Configuration Guide
 
-This guide provides step-by-step instructions for installing and configuring `qwen-code` in an on-premise environment.
+This guide provides step-by-step instructions for installing and configuring `one-code` in an on-premise environment.
 
 ### **Prerequisites:**
 
@@ -34,12 +34,12 @@ This guide provides step-by-step instructions for installing and configuring `qw
 
 If you do not have Node.js installed, download the LTS version from the [official Node.js website](https://nodejs.org/) and install it.
 
-### **Step 2: Install `qwen-code`**
+### **Step 2: Install One Code**
 
-Install the `qwen-code` package globally using `npm`:
+Install the `one-code` package globally using `npm`:
 
 ```bash
-npm install -g @qwen-code/qwen-code
+npm install -g @one-code/one-code
 ```
 
 ### **Step 3: Configure Environment Variables**
@@ -117,22 +117,22 @@ To use the internal web search feature, you need to create a configuration file.
 1.  **Check the version:**
 
     ```bash
-    qwen --version
+    one --version
     ```
 
 2.  **Test the connection to your LLM:**
 
     ```bash
-    qwen "Hello! Are you there?"
+    one "Hello! Are you there?"
     ```
 
 3.  **Test the internal web search:**
 
     ```bash
-    qwen "Find the API authentication guide."
+    one "Find the API authentication guide."
     ```
 
-If you receive a valid response, your on-premise `qwen-code` is ready to use.
+If you receive a valid response, your on-premise `one-code` is ready to use.
 
 ---
 
@@ -157,7 +157,7 @@ If you are new to command-line tools and development environments, here is a mor
 
 ### **Troubleshooting Common Issues**
 
-*   **Error: `qwen: command not found`**
+*   **Error: `one: command not found`**
     *   **Cause:** The `npm` global directory is not in your system's PATH.
     *   **Solution:** Add the `npm` global bin directory to your PATH. You can find the directory by running `npm config get prefix`.
 
