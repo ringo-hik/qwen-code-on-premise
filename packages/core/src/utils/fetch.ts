@@ -7,6 +7,11 @@
 import { getErrorMessage, isNodeError } from './errors.js';
 import { URL } from 'url';
 
+// 온프레미스 환경을 위한 SSL 우회 설정
+if (process.env.ON_PREMISE_MODE === 'true' || process.env.NODE_ENV === 'on-premise') {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+}
+
 const PRIVATE_IP_RANGES = [
   /^10\./,
   /^127\./,
