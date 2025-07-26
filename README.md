@@ -5,13 +5,14 @@
 Qwen Code is a command-line AI workflow tool adapted from [**Gemini CLI**](https://github.com/google-gemini/gemini-cli) (Please refer to [this document](./README.gemini.md) for more details), optimized for [Qwen3-Coder](https://github.com/QwenLM/Qwen3-Coder) models with enhanced parser support & tool support.
 
 > [!WARNING]
-> Qwen Code may issue multiple API calls per cycle, resulting in higher token usage, similar to Claude Code. We’re actively working to enhance API efficiency and improve the overall developer experience. ModelScope offers 2,000 free API calls if you are in China mainland. Please check [API config section](#api-configuration) for more details.
+> Qwen Code may issue multiple API calls per cycle, resulting in higher token usage, similar to Claude Code. We're actively working to enhance API efficiency and improve the overall developer experience. ModelScope offers 2,000 free API calls if you are in China mainland. Please check [API config section](#api-configuration) for more details.
 
 ## Key Features
 
 - **Code Understanding & Editing** - Query and edit large codebases beyond traditional context window limits
 - **Workflow Automation** - Automate operational tasks like handling pull requests and complex rebases
 - **Enhanced Parser** - Adapted parser specifically optimized for Qwen-Coder models
+- **🏢 On-Premise Support** - Air-gapped deployment with internal LLM servers and custom web search
 
 ## Quick Start
 
@@ -39,7 +40,7 @@ qwen
 Or you can install it from source:
 
 ```bash
-git clone https://github.com/QwenLM/qwen-code.git
+git clone https://github.com/ringo-hik/qwen-code.git
 cd qwen-code
 npm install
 npm install -g .
@@ -162,6 +163,28 @@ This project is based on [Google Gemini CLI](https://github.com/google-gemini/ge
 ## License
 
 [LICENSE](./LICENSE)
+
+## 🏢 On-Premise Deployment
+
+For air-gapped environments with internal LLM servers, see the comprehensive on-premise documentation:
+
+- **[Installation Guide](docs/on-premise/설치가이드.md)** - Complete setup instructions
+- **[Configuration](docs/on-premise/)** - Internal web search and SSL bypass setup
+- **[Test Guide](docs/on-premise/테스트가이드.md)** - Verification procedures
+
+### Quick On-Premise Setup
+```bash
+# Set environment variables
+export OPENAI_BASE_URL="http://your-internal-llm:8080/v1"
+export ON_PREMISE_MODE="true"
+export NODE_TLS_REJECT_UNAUTHORIZED="0"
+
+# Configure internal web search
+cp internal-web-config.json ~/
+
+# Use normally
+qwen "Find authentication methods in internal API docs"
+```
 
 ## Star History
 
