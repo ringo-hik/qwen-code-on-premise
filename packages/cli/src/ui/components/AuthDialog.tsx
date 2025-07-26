@@ -45,44 +45,21 @@ export function AuthDialog({
     initialErrorMessage || null,
   );
   const [showOpenAIKeyPrompt, setShowOpenAIKeyPrompt] = useState(false);
-  const items = [{ label: 'OpenAI', value: AuthType.USE_OPENAI }];
-
-  const initialAuthIndex = Math.max(
-    0,
-    items.findIndex((item) => {
-      if (settings.merged.selectedAuthType) {
-        return item.value === settings.merged.selectedAuthType;
-      }
-
-      const defaultAuthType = parseDefaultAuthType(
-        process.env.GEMINI_DEFAULT_AUTH_TYPE,
-      );
-      if (defaultAuthType) {
-        return item.value === defaultAuthType;
-      }
-
-      if (process.env.GEMINI_API_KEY) {
-        return item.value === AuthType.USE_GEMINI;
-      }
-
-      return item.value === AuthType.LOGIN_WITH_GOOGLE;
-    }),
-  );
-
-  const handleAuthSelect = (authMethod: AuthType) => {
-    const error = validateAuthMethod(authMethod);
+  
+  // Skip auth selection - always use OpenAI
+  React.useEffect(() => {
+    const error = validateAuthMethod(AuthType.USE_OPENAI);
     if (error) {
-      if (authMethod === AuthType.USE_OPENAI && !process.env.OPENAI_API_KEY) {
+      if (!process.env.OPENAI_API_KEY) {
         setShowOpenAIKeyPrompt(true);
         setErrorMessage(null);
       } else {
         setErrorMessage(error);
       }
     } else {
-      setErrorMessage(null);
-      onSelect(authMethod, SettingScope.User);
+      onSelect(AuthType.USE_OPENAI, SettingScope.User);
     }
-  };
+  }, [onSelect]);
 
   const handleOpenAIKeySubmit = (
     apiKey: string,
@@ -133,6 +110,27 @@ export function AuthDialog({
     );
   }
 
+  if (errorMessage) {
+    return (
+      <Box
+        borderStyle="round"
+        borderColor={Colors.Gray}
+        flexDirection="column"
+        padding={1}
+        width="100%"
+      >
+        <Text bold>Authentication Error</Text>
+        <Box marginTop={1}>
+          <Text color={Colors.AccentRed}>{errorMessage}</Text>
+        </Box>
+        <Box marginTop={1}>
+          <Text>Please check your .env file and ensure OPENAI_API_KEY is set.</Text>
+        </Box>
+      </Box>
+    );
+  }
+
+  // Show loading while auto-authenticating
   return (
     <Box
       borderStyle="round"
@@ -141,33 +139,9 @@ export function AuthDialog({
       padding={1}
       width="100%"
     >
-      <Text bold>Get started</Text>
+      <Text bold>Connecting to OpenRouter...</Text>
       <Box marginTop={1}>
-        <Text>How would you like to authenticate for this project?</Text>
-      </Box>
-      <Box marginTop={1}>
-        <RadioButtonSelect
-          items={items}
-          initialIndex={initialAuthIndex}
-          onSelect={handleAuthSelect}
-          isFocused={true}
-        />
-      </Box>
-      {errorMessage && (
-        <Box marginTop={1}>
-          <Text color={Colors.AccentRed}>{errorMessage}</Text>
-        </Box>
-      )}
-      <Box marginTop={1}>
-        <Text color={Colors.AccentPurple}>(Use Enter to Set Auth)</Text>
-      </Box>
-      <Box marginTop={1}>
-        <Text>Terms of Services and Privacy Notice for Qwen Code</Text>
-      </Box>
-      <Box marginTop={1}>
-        <Text color={Colors.AccentBlue}>
-          {'https://github.com/QwenLM/Qwen3-Coder/blob/main/README.md'}
-        </Text>
+        <Text>Authenticating using OpenAI API configuration...</Text>
       </Box>
     </Box>
   );

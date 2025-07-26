@@ -74,69 +74,16 @@ export async function createContentGeneratorConfig(
   model: string | undefined,
   authType: AuthType | undefined,
 ): Promise<ContentGeneratorConfig> {
-  const geminiApiKey = process.env.GEMINI_API_KEY || undefined;
-  const googleApiKey = process.env.GOOGLE_API_KEY || undefined;
-  const googleCloudProject = process.env.GOOGLE_CLOUD_PROJECT || undefined;
-  const googleCloudLocation = process.env.GOOGLE_CLOUD_LOCATION || undefined;
   const openaiApiKey = process.env.OPENAI_API_KEY;
 
-  // Use runtime model from config if available, otherwise fallback to parameter or default
-  const effectiveModel = model || DEFAULT_GEMINI_MODEL;
+  // Always use OpenAI for simplicity - use model from env or default
+  const effectiveModel = process.env.OPENAI_MODEL || model || 'anthropic/claude-3.5-sonnet';
 
   const contentGeneratorConfig: ContentGeneratorConfig = {
     model: effectiveModel,
-    authType,
+    authType: AuthType.USE_OPENAI,
+    apiKey: openaiApiKey,
   };
-
-  // If we are using Google auth or we are in Cloud Shell, there is nothing else to validate for now
-  if (
-    authType === AuthType.LOGIN_WITH_GOOGLE ||
-    authType === AuthType.CLOUD_SHELL
-  ) {
-    return contentGeneratorConfig;
-  }
-
-  if (authType === AuthType.USE_GEMINI && geminiApiKey) {
-    contentGeneratorConfig.apiKey = geminiApiKey;
-    contentGeneratorConfig.vertexai = false;
-    contentGeneratorConfig.model = await getEffectiveModel(
-      contentGeneratorConfig.apiKey,
-      contentGeneratorConfig.model,
-    );
-
-    return contentGeneratorConfig;
-  }
-
-  if (
-    authType === AuthType.USE_VERTEX_AI &&
-    (googleApiKey || (googleCloudProject && googleCloudLocation))
-  ) {
-    contentGeneratorConfig.apiKey = googleApiKey;
-    contentGeneratorConfig.vertexai = true;
-
-    return contentGeneratorConfig;
-  }
-
-  if (authType === AuthType.USE_OPENAI && openaiApiKey) {
-    contentGeneratorConfig.apiKey = openaiApiKey;
-    contentGeneratorConfig.model = process.env.OPENAI_MODEL || '';
-
-    return contentGeneratorConfig;
-  }
-
-  if (authType === AuthType.USE_INTERNAL_LLM) {
-    // 요구사항 명세에 맞는 환경변수명 사용
-    // 1. LLM_BASE_URL 우선 (내부망 직접 연결)
-    // 2. PROXY_SERVER_URL 차선 (프록시 서버 경유)
-    const baseUrl = process.env.LLM_BASE_URL || process.env.PROXY_SERVER_URL || 
-                   process.env.INTERNAL_LLM_BASE_URL || 'http://localhost:8443/devport/api/v1';
-    
-    contentGeneratorConfig.apiKey = process.env.INTERNAL_LLM_API_KEY || 'dummy-key';
-    contentGeneratorConfig.model = process.env.INTERNAL_LLM_MODEL || 'internal-llm-model';
-    contentGeneratorConfig.baseUrl = baseUrl;
-
-    return contentGeneratorConfig;
-  }
 
   return contentGeneratorConfig;
 }
@@ -146,61 +93,15 @@ export async function createContentGenerator(
   gcConfig: Config,
   sessionId?: string,
 ): Promise<ContentGenerator> {
-  const version = process.env.CLI_VERSION || process.version;
-  const httpOptions = {
-    headers: {
-      'User-Agent': `GeminiCLI/${version} (${process.platform}; ${process.arch})`,
-    },
-  };
-  if (
-    config.authType === AuthType.LOGIN_WITH_GOOGLE ||
-    config.authType === AuthType.CLOUD_SHELL
-  ) {
-    return createCodeAssistContentGenerator(
-      httpOptions,
-      config.authType,
-      gcConfig,
-      sessionId,
-    );
+  // Always use OpenAI for simplicity
+  if (!config.apiKey) {
+    throw new Error('OpenAI API key is required');
   }
 
-  if (
-    config.authType === AuthType.USE_GEMINI ||
-    config.authType === AuthType.USE_VERTEX_AI
-  ) {
-    const googleGenAI = new GoogleGenAI({
-      apiKey: config.apiKey === '' ? undefined : config.apiKey,
-      vertexai: config.vertexai,
-      httpOptions,
-    });
-
-    return googleGenAI.models;
-  }
-
-  if (config.authType === AuthType.USE_OPENAI) {
-    if (!config.apiKey) {
-      throw new Error('OpenAI API key is required');
-    }
-
-    // Import OpenAIContentGenerator dynamically to avoid circular dependencies
-    const { OpenAIContentGenerator } = await import(
-      './openaiContentGenerator.js'
-    );
-
-    // Always use OpenAIContentGenerator, logging is controlled by enableOpenAILogging flag
-    return new OpenAIContentGenerator(config.apiKey, config.model, gcConfig);
-  }
-
-  if (config.authType === AuthType.USE_INTERNAL_LLM) {
-    // Import InternalLlmContentGenerator dynamically
-    const { InternalLlmContentGenerator } = await import(
-      './internalLlmContentGenerator.js'
-    );
-
-    return new InternalLlmContentGenerator(config);
-  }
-
-  throw new Error(
-    `Error creating contentGenerator: Unsupported authType: ${config.authType}`,
+  // Import OpenAIContentGenerator dynamically to avoid circular dependencies
+  const { OpenAIContentGenerator } = await import(
+    './openaiContentGenerator.js'
   );
+
+  return new OpenAIContentGenerator(config.apiKey, config.model, gcConfig);
 }

@@ -30,6 +30,7 @@ import { logApiResponse } from '../telemetry/loggers.js';
 import { ApiResponseEvent } from '../telemetry/types.js';
 import { Config } from '../config/config.js';
 import { openaiLogger } from '../utils/openaiLogger.js';
+import https from 'https';
 
 // OpenAI API type definitions for logging
 interface OpenAIToolCall {
@@ -115,11 +116,17 @@ export class OpenAIContentGenerator implements ContentGenerator {
       timeoutConfig.maxRetries = contentGeneratorConfig.maxRetries;
     }
 
+    // Configure HTTPS agent to skip SSL verification for on-premise environments
+    const httpsAgent = new https.Agent({
+      rejectUnauthorized: false,
+    });
+
     this.client = new OpenAI({
       apiKey,
       baseURL,
       timeout: timeoutConfig.timeout,
       maxRetries: timeoutConfig.maxRetries,
+      httpAgent: httpsAgent,
     });
   }
 

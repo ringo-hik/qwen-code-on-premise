@@ -272,16 +272,11 @@ export function loadEnvironment(): void {
     dotenv.config({ path: envFilePath, quiet: true });
   }
 
-  // 내부망 LLM 자동 감지 설정
-  autoConfigureInternalLlm();
+  // OpenAI/OpenRouter 자동 설정
+  autoConfigureOpenAI();
 }
 
-function autoConfigureInternalLlm(): void {
-  // QWEN_AUTH_TYPE가 설정되어 있으면 그대로 사용
-  if (process.env.QWEN_AUTH_TYPE) {
-    return;
-  }
-
+function autoConfigureOpenAI(): void {
   // 글로벌 설치 시 홈 디렉토리의 .qwen 폴더에서 설정 확인
   const homeQwenDir = path.join(USER_SETTINGS_DIR);
   const globalEnvPath = path.join(homeQwenDir, '.env');
@@ -290,39 +285,25 @@ function autoConfigureInternalLlm(): void {
   if (fs.existsSync(globalEnvPath)) {
     try {
       dotenv.config({ path: globalEnvPath, quiet: true });
-      console.log('💡 내부망 LLM 글로벌 설정을 로드했습니다.');
+      console.log('💡 글로벌 설정을 로드했습니다.');
     } catch (error) {
       // 에러 무시하고 계속
     }
   }
 
-  // 환경변수 기반 자동 감지
-  // requirement.md 명세에 맞는 환경변수 검사
-  const hasInternalLlmConfig = process.env.LLM_BASE_URL || process.env.PROXY_SERVER_URL || 
-                              process.env.INTERNAL_LLM_BASE_URL || process.env.INTERNAL_LLM_API_KEY || 
-                              process.env.INTERNAL_LLM_MODEL;
-  
-  if (hasInternalLlmConfig) {
-    console.log('🚀 내부망 LLM 모드로 실행합니다.');
-    process.env.QWEN_AUTH_TYPE = AuthType.USE_INTERNAL_LLM;
+  // OpenAI 설정이 있는 경우
+  if (process.env.OPENAI_API_KEY) {
+    console.log('🚀 OpenRouter 모드로 실행합니다.');
+    // SSL 인증서 검증 항상 비활성화 (온프레미스 환경에서 안전성)
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     
-    // DISABLE_SSL_SKIP이 true가 아닌 경우에만 SSL 우회 적용
-    if (process.env.DISABLE_SSL_SKIP !== 'true') {
-      process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // SSL 우회 자동 설정
+    // 기본값 설정
+    if (!process.env.OPENAI_BASE_URL) {
+      process.env.OPENAI_BASE_URL = 'https://openrouter.ai/api/v1';
     }
-    
-    // 기본값 설정 (하위호환성 유지)
-    if (!process.env.INTERNAL_LLM_BASE_URL && !process.env.LLM_BASE_URL && !process.env.PROXY_SERVER_URL) {
-      process.env.INTERNAL_LLM_BASE_URL = 'http://localhost:8443/devport/api/v1';
+    if (!process.env.OPENAI_MODEL) {
+      process.env.OPENAI_MODEL = 'anthropic/claude-3.5-sonnet';
     }
-    if (!process.env.INTERNAL_LLM_API_KEY) {
-      process.env.INTERNAL_LLM_API_KEY = 'test-key';
-    }
-    if (!process.env.INTERNAL_LLM_MODEL) {
-      process.env.INTERNAL_LLM_MODEL = 'internal-llm-model';
-    }
-    
-    return;
   }
 }
 

@@ -18,8 +18,8 @@ export function OpenAIKeyPrompt({
   onCancel,
 }: OpenAIKeyPromptProps): React.JSX.Element {
   const [apiKey, setApiKey] = useState('');
-  const [baseUrl, setBaseUrl] = useState('');
-  const [model, setModel] = useState('');
+  const [baseUrl, setBaseUrl] = useState('https://openrouter.ai/api/v1');
+  const [model, setModel] = useState('qwen/qwen-2.5-coder-32b-instruct');
   const [currentField, setCurrentField] = useState<
     'apiKey' | 'baseUrl' | 'model'
   >('apiKey');
