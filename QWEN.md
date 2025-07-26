@@ -1,3 +1,41 @@
+# SuperQwen Entry Point
+
+Qwen Code enhanced with SuperClaude framework for advanced AI-powered development workflows.
+
+@.qwen/QWEN.md
+@.qwen/COMMANDS.md
+@.qwen/FLAGS.md
+@.qwen/PRINCIPLES.md
+@.qwen/RULES.md
+@.qwen/MCP.md
+@.qwen/PERSONAS.md
+@.qwen/ORCHESTRATOR.md
+@.qwen/MODES.md
+
+## SuperQwen Commands
+
+Use the `/sc:` prefix to access specialized SuperClaude commands:
+
+### Development Commands
+- `/sc:build [target]` - Project builder with framework detection
+- `/sc:implement [feature]` - Feature and code implementation
+- `/sc:design [domain]` - Design orchestration
+
+### Analysis Commands
+- `/sc:analyze [target]` - Multi-dimensional code and system analysis
+- `/sc:troubleshoot [symptoms]` - Problem investigation
+- `/sc:explain [topic]` - Educational explanations
+
+### Quality Commands
+- `/sc:improve [target]` - Evidence-based code enhancement
+- `/sc:cleanup [target]` - Technical debt reduction
+- `/sc:test [type]` - Testing workflows
+
+### Documentation & Meta Commands
+- `/sc:document [target]` - Documentation generation
+- `/sc:git [operation]` - Git workflow assistant
+- `/sc:estimate [target]` - Evidence-based estimation
+
 ## Building and running
 
 Before submitting any changes, it is crucial to validate them by running the full preflight check. This command will build the repository, run all tests, check for type errors, and lint the code.

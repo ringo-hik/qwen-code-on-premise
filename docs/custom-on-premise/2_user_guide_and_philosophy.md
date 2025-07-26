@@ -36,10 +36,25 @@ If you do not have Node.js installed, download the LTS version from the [officia
 
 ### **Step 2: Install `qwen-code`**
 
-Install the `qwen-code` package globally using `npm`:
-
+**Method 1: Global Package Installation (Recommended for end users)**
 ```bash
 npm install -g @qwen-code/qwen-code
+```
+
+**Method 2: Source Installation (Recommended for development)**
+```bash
+# Clone the repository
+git clone https://github.com/your-org/qwen-code-on-premise.git
+cd qwen-code-on-premise
+
+# Install dependencies
+npm install
+
+# Install globally from source
+npm install -g .
+
+# Verify installation
+qwen-one --version
 ```
 
 ### **Step 3: Configure Environment Variables**
@@ -117,22 +132,31 @@ To use the internal web search feature, you need to create a configuration file.
 1.  **Check the version:**
 
     ```bash
-    qwen --version
+    qwen-one --version
     ```
 
 2.  **Test the connection to your LLM:**
 
     ```bash
-    qwen "Hello! Are you there?"
+    qwen-one
+    # Then type: Hello! Are you there?
     ```
 
-3.  **Test the internal web search:**
+3.  **Test SuperClaude expert features:**
 
     ```bash
-    qwen "Find the API authentication guide."
+    qwen-one
+    # Then type: 이 프로젝트를 architect 전문가 관점에서 분석해줘
     ```
 
-If you receive a valid response, your on-premise `qwen-code` is ready to use.
+4.  **Test the internal web search:**
+
+    ```bash
+    qwen-one
+    # Then type: Find the API authentication guide.
+    ```
+
+If you receive a valid response with structured analysis and expert insights, your on-premise `qwen-code` with SuperClaude framework is ready to use.
 
 ---
 
@@ -142,24 +166,55 @@ If you receive a valid response, your on-premise `qwen-code` is ready to use.
 
 If you are new to command-line tools and development environments, here is a more detailed walkthrough for Windows.
 
-1.  **Install Chocolatey (a package manager for Windows):**
-    Open PowerShell as an administrator and run:
-    ```powershell
-    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-    ```
+1.  **Install Node.js directly:**
+    - Download Node.js LTS from [nodejs.org](https://nodejs.org/)
+    - Run the installer and follow the setup wizard
+    - Restart your command prompt/PowerShell
 
-2.  **Install Node.js using Chocolatey:**
+2.  **Verify Node.js installation:**
     ```powershell
-    choco install nodejs-lts
+    node --version
+    npm --version
     ```
 
 3.  **Follow Steps 2-5 from the Installation Guide.**
 
+### **SuperClaude Expert System Guide**
+
+Once installed, you can access 11 specialized AI experts:
+
+**Development Experts:**
+- **Architect**: System design and architecture analysis
+- **Frontend**: UI/UX development and accessibility
+- **Backend**: Server-side development and APIs
+- **Security**: Threat modeling and vulnerability assessment
+- **Performance**: Optimization and bottleneck elimination
+
+**Quality Experts:**
+- **Analyzer**: Root cause analysis and investigation
+- **QA**: Quality assurance and testing
+- **Refactorer**: Code quality and technical debt management
+- **DevOps**: Infrastructure and deployment automation
+
+**Communication Experts:**
+- **Mentor**: Educational guidance and knowledge transfer
+- **Scribe**: Professional documentation and communication
+
+**Usage Examples:**
+```bash
+qwen-one
+# Automatic expert activation based on your request:
+> "이 코드의 보안 취약점을 찾아줘" → Security expert activated
+> "React 컴포넌트를 최적화해줘" → Frontend expert activated
+> "API 서버 아키텍처를 설계해줘" → Architect + Backend experts activated
+```
+
 ### **Troubleshooting Common Issues**
 
-*   **Error: `qwen: command not found`**
+*   **Error: `qwen-one: command not found`**
     *   **Cause:** The `npm` global directory is not in your system's PATH.
     *   **Solution:** Add the `npm` global bin directory to your PATH. You can find the directory by running `npm config get prefix`.
+    *   **Alternative:** Use `npx @qwen-code/qwen-code` if globally installed package is not found.
 
 *   **Error: `Connection refused` or `ECONNREFUSED`**
     *   **Cause:** The `OPENAI_BASE_URL` is incorrect, or the LLM server is not running.
