@@ -88,44 +88,48 @@ source ~/.bashrc
 
 ### **Step 4: Configure Internal Web Search (Optional)**
 
-To use the internal web search feature, you need to create a configuration file.
+To use the internal web search feature, you can set it up using .env file or environment variables.
 
-1.  **Create the `internal-web-config.json` file:**
+**Method 1: Using .env file (Recommended)**
 
-    Create this file in a location of your choice (e.g., your home directory). Add the URLs of your internal knowledge bases, along with a description for each.
+1. **Copy and edit the example configuration:**
+   ```bash
+   cp internal-web-config.example.json internal-web-config.json
+   # Edit the file with your internal URLs
+   ```
 
-    ```json
-    {
-      "enabled": true,
-      "timeout": 10000,
-      "urls": {
-        "company_wiki": {
-          "url": "http://wiki.company.com",
-          "description": "Internal company wiki, development guides, API documentation, and technical standards."
-        },
-        "api_docs": {
-          "url": "http://api-docs.internal.com",
-          "description": "Internal API reference, REST API documentation, and authentication guides."
-        }
-      }
-    }
-    ```
+2. **Add to your .env file:**
+   ```bash
+   INTERNAL_WEB_CONFIG_PATH=./internal-web-config.json
+   ```
 
-2.  **Set the `INTERNAL_WEB_CONFIG_PATH` environment variable:**
+**Method 2: Environment Variables**
 
-    This variable should point to the absolute path of your `internal-web-config.json` file.
+1. **Create the `internal-web-config.json` file:**
+   ```json
+   {
+     "enabled": true,
+     "timeout": 10000,
+     "sites": [
+       {
+         "name": "Company API Documentation",
+         "baseUrl": "http://internal-docs.company.com",
+         "searchEndpoint": "/search",
+         "priority": 1,
+         "description": "Internal API reference and authentication guides"
+       }
+     ]
+   }
+   ```
 
-    #### **For Windows (PowerShell):**
-
-    ```powershell
-    $env:INTERNAL_WEB_CONFIG_PATH="C:\Users\YourUser\internal-web-config.json"
-    ```
-
-    #### **For Linux/macOS:**
-
-    ```bash
-    export INTERNAL_WEB_CONFIG_PATH="/home/YourUser/internal-web-config.json"
-    ```
+2. **Set the environment variable:**
+   ```bash
+   # PowerShell
+   $env:INTERNAL_WEB_CONFIG_PATH="C:\path\to\internal-web-config.json"
+   
+   # bash/zsh
+   export INTERNAL_WEB_CONFIG_PATH="/path/to/internal-web-config.json"
+   ```
 
 ### **Step 5: Verify the Installation**
 

@@ -1,0 +1,27 @@
+{
+  "enabled": true,
+  "timeout": 10000,
+  "sites": [
+    {
+      "name": "Company API Documentation",
+      "baseUrl": "http://internal-docs.company.com",
+      "searchEndpoint": "/search",
+      "priority": 1,
+      "description": "Internal API reference, REST API documentation, and authentication guides"
+    },
+    {
+      "name": "Development Wiki",
+      "baseUrl": "http://wiki.company.com",
+      "searchEndpoint": "/api/search", 
+      "priority": 2,
+      "description": "Internal company wiki, development guides, coding standards, and technical documentation"
+    },
+    {
+      "name": "Architecture Documents",
+      "baseUrl": "http://arch-docs.internal.com",
+      "searchEndpoint": "/search",
+      "priority": 3,
+      "description": "System architecture documentation, design patterns, and technical specifications"
+    }
+  ]
+}

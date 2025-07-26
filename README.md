@@ -50,13 +50,27 @@ qwen-one --version
 
 ### Step 2: Internal Server Connection
 
+**Method 1: Using .env file (Recommended)**
 ```bash
-# Environment Variables (PowerShell)
+# Copy and edit the example file
+cp .env.example .env
+# Edit .env with your settings
+
+# Or use interactive setup
+# Windows PowerShell:
+.\scripts\env-setup.ps1 -Interactive
+
+# Linux/macOS:
+./scripts/env-setup.sh --interactive
+```
+
+**Method 2: Environment Variables**
+```bash
+# PowerShell
 $env:OPENAI_BASE_URL = "http://your-internal-llm:8080/v1"
 $env:OPENAI_API_KEY = "internal-api-key"
 $env:OPENAI_MODEL = "your-internal-model"
 $env:ON_PREMISE_MODE = "true"
-# Optional: SSL bypass
 $env:NODE_TLS_REJECT_UNAUTHORIZED = "0"
 
 # bash/zsh
