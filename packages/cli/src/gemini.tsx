@@ -20,6 +20,8 @@ import {
   USER_SETTINGS_PATH,
   SettingScope,
 } from './config/settings.js';
+import * as fs from 'fs';
+import * as path from 'path';
 import { themeManager } from './ui/themes/theme-manager.js';
 import { getStartupWarnings } from './utils/startupWarnings.js';
 import { getUserStartupWarnings } from './utils/userStartupWarnings.js';
@@ -85,9 +87,113 @@ async function relaunchWithAdditionalArgs(additionalArgs: string[]) {
   process.exit(0);
 }
 
+async function checkAndSetupEnvironment(): Promise<void> {
+  // Check if essential environment variables are missing
+  const requiredEnvVars = ['OPENAI_BASE_URL', 'OPENAI_API_KEY'];
+  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+  
+  if (missingVars.length === 0) {
+    return; // All required variables are present
+  }
+
+  console.log('\n🔧 Environment Setup Required');
+  console.log('================================');
+  console.log(`Missing environment variables: ${missingVars.join(', ')}`);
+  console.log('\nChoose setup method:');
+  console.log('1. Interactive setup (recommended)');
+  console.log('2. Manual .env file creation');
+  console.log('3. Skip setup (may cause errors)');
+  
+  // Simple prompt without external dependencies
+  process.stdout.write('\nEnter choice (1-3): ');
+  
+  return new Promise((resolve) => {
+    process.stdin.setRawMode(true);
+    process.stdin.resume();
+    process.stdin.on('data', async (key) => {
+      const choice = key.toString().trim();
+      process.stdin.setRawMode(false);
+      process.stdin.pause();
+      
+      console.log(choice);
+      
+      if (choice === '1') {
+        await runInteractiveSetup();
+      } else if (choice === '2') {
+        console.log('\n📝 Manual Setup:');
+        console.log('1. Copy .env.example to .env');
+        console.log('2. Edit .env with your server settings');
+        console.log('3. Run qwen-one again');
+        process.exit(0);
+      } else if (choice === '3') {
+        console.log('\n⚠️ Continuing without setup - errors may occur');
+      } else {
+        console.log('\n❌ Invalid choice, continuing without setup');
+      }
+      
+      resolve();
+    });
+  });
+}
+
+async function runInteractiveSetup(): Promise<void> {
+  console.log('\n🚀 Interactive Environment Setup');
+  console.log('=================================');
+  
+  // Find the installation directory (look for scripts/env-setup.ps1)
+  const possiblePaths = [
+    path.join(process.cwd(), 'scripts', 'env-setup.ps1'), // Local development
+    path.join(__dirname, '..', '..', '..', 'scripts', 'env-setup.ps1'), // Global install
+    path.join(process.argv[1], '..', '..', 'scripts', 'env-setup.ps1'), // Binary location
+  ];
+  
+  let setupScriptPath = null;
+  for (const scriptPath of possiblePaths) {
+    if (fs.existsSync(scriptPath)) {
+      setupScriptPath = scriptPath;
+      break;
+    }
+  }
+  
+  if (!setupScriptPath) {
+    console.log('❌ Setup script not found. Please create .env file manually.');
+    return;
+  }
+  
+  console.log('Running interactive setup...\n');
+  
+  try {
+    const setupProcess = spawn('powershell.exe', ['-File', setupScriptPath, '-Interactive'], {
+      stdio: 'inherit',
+      shell: true
+    });
+    
+    await new Promise((resolve, reject) => {
+      setupProcess.on('close', (code) => {
+        if (code === 0) {
+          console.log('\n✅ Environment setup completed!');
+          console.log('Please run qwen-one again to continue.');
+          resolve(undefined);
+        } else {
+          console.log('\n❌ Setup failed. Please check manually.');
+          reject(new Error(`Setup script exited with code ${code}`));
+        }
+      });
+    });
+    
+    process.exit(0);
+  } catch (error) {
+    console.log('\n❌ Failed to run setup script:', error);
+    console.log('Please create .env file manually.');
+  }
+}
+
 export async function main() {
   const workspaceRoot = process.cwd();
   const settings = loadSettings(workspaceRoot);
+
+  // Check and setup environment if needed
+  await checkAndSetupEnvironment();
 
   await cleanupCheckpoints();
   if (settings.errors.length > 0) {

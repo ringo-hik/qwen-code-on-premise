@@ -42,11 +42,11 @@ ON_PREMISE_MODE=true
 
 Write-Host "`nExample .env file format:" -ForegroundColor Yellow
 Write-Host @"
-OPENAI_BASE_URL=http://your-internal-llm:8080/v1
-OPENAI_API_KEY=internal-api-key
-OPENAI_MODEL=qwen3-235b-a22b-2507
-ON_PREMISE_MODE=true
+OPENAI_BASE_URL=https://openrouter.ai/api/v1
+OPENAI_API_KEY=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
+OPENAI_MODEL=qwen/qwen3-235b-a22b-2507
 NODE_TLS_REJECT_UNAUTHORIZED=0
+INTERNAL_WEB_CONFIG_PATH=./internal-web-config.json
 "@ -ForegroundColor Gray
 
 Write-Host "`nAfter creating .env file, simply run: qwen-one" -ForegroundColor Green

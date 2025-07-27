@@ -8,7 +8,14 @@
       "Bash(git push:*)",
       "Bash(chmod:*)",
       "Bash(git checkout:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(echo $PWD)",
+      "Bash(npm run build:*)",
+      "Bash(npm install:*)",
+      "Bash(rm:*)",
+      "Bash(true)",
+      "Bash(unset:*)",
+      "Bash(echo:*)"
     ],
     "deny": []
   }
