@@ -1,0 +1,85 @@
+{
+  "enabled": true,
+  "timeout": 10000,
+  "max_retries": 3,
+  "concurrent_requests": 2,
+  "cache_enabled": true,
+  "cache_ttl": 3600,
+  "user_agent": "qwen-code-internal/1.0",
+  "urls": {
+    "react_docs": {
+      "url": "https://react.dev",
+      "description": "React 공식 문서, React 가이드, Hook 사용법, 성능 최적화",
+      "categories": ["documentation", "react", "frontend", "javascript"],
+      "keywords": ["React", "Hook", "컴포넌트", "성능", "최적화", "useState", "useEffect"],
+      "priority": 10
+    },
+    "typescript_docs": {
+      "url": "https://www.typescriptlang.org/docs",
+      "description": "TypeScript 공식 문서, 타입 시스템, 설정 가이드",
+      "categories": ["documentation", "typescript", "javascript"],
+      "keywords": ["TypeScript", "타입", "인터페이스", "설정", "컴파일러"],
+      "priority": 9
+    },
+    "node_docs": {
+      "url": "https://nodejs.org/docs",
+      "description": "Node.js 공식 문서, API 레퍼런스, 성능 가이드",
+      "categories": ["documentation", "nodejs", "backend", "javascript"],
+      "keywords": ["Node.js", "API", "성능", "모듈", "npm"],
+      "priority": 8
+    },
+    "mdn_web": {
+      "url": "https://developer.mozilla.org",
+      "description": "MDN 웹 문서, JavaScript 레퍼런스, 웹 표준, 브라우저 API",
+      "categories": ["documentation", "web", "javascript", "api"],
+      "keywords": ["JavaScript", "웹", "API", "브라우저", "표준"],
+      "priority": 8
+    },
+    "github_docs": {
+      "url": "https://docs.github.com",
+      "description": "GitHub 문서, Git 사용법, CI/CD, Actions 가이드",
+      "categories": ["documentation", "git", "cicd", "github"],
+      "keywords": ["Git", "GitHub", "Actions", "CI", "CD", "저장소"],
+      "priority": 7
+    },
+    "stackoverflow": {
+      "url": "https://stackoverflow.com",
+      "description": "Stack Overflow 개발자 Q&A, 프로그래밍 문제 해결",
+      "categories": ["qa", "programming", "troubleshooting"],
+      "keywords": ["질문", "답변", "프로그래밍", "오류", "해결"],
+      "priority": 6
+    },
+    "npm_docs": {
+      "url": "https://docs.npmjs.com",
+      "description": "npm 문서, 패키지 관리, 스크립트 설정",
+      "categories": ["documentation", "package", "nodejs"],
+      "keywords": ["npm", "패키지", "의존성", "스크립트"],
+      "priority": 5
+    },
+    "webpack_docs": {
+      "url": "https://webpack.js.org/concepts",
+      "description": "Webpack 공식 문서, 번들링, 최적화 설정",
+      "categories": ["documentation", "build", "bundling"],
+      "keywords": ["Webpack", "번들", "빌드", "최적화"],
+      "priority": 4
+    }
+  },
+  "search_config": {
+    "min_score_threshold": 0.3,
+    "max_results": 3,
+    "enable_fuzzy_match": true,
+    "keyword_weight": 0.4,
+    "description_weight": 0.4,
+    "category_weight": 0.2,
+    "priority_weight": 0.1
+  },
+  "crawl_config": {
+    "max_page_size": 1048576,
+    "follow_redirects": true,
+    "extract_links": false,
+    "parse_html": true,
+    "remove_scripts": true,
+    "remove_styles": true,
+    "text_only": true
+  }
+}

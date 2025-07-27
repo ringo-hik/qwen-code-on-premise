@@ -26,6 +26,9 @@ export function tokenLimit(model: Model): TokenCount {
     case 'gemini-2.0-flash-preview-image-generation':
       return 32_000;
     default:
+      if (model.toLowerCase().includes('qwen')) {
+        return 262_144; // Default 256K for any Qwen model
+      }
       return DEFAULT_TOKEN_LIMIT;
   }
 }
