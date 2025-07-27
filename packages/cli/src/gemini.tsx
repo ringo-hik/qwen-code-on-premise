@@ -99,52 +99,23 @@ async function checkAndSetupEnvironment(): Promise<void> {
   console.log('\n🔧 Environment Setup Required');
   console.log('================================');
   console.log(`Missing environment variables: ${missingVars.join(', ')}`);
-  console.log('\nChoose setup method:');
-  console.log('1. Interactive setup (recommended)');
-  console.log('2. Manual .env file creation');
-  console.log('3. Skip setup (may cause errors)');
+  console.log('Running automatic environment setup...\n');
   
-  // Simple prompt without external dependencies
-  process.stdout.write('\nEnter choice (1-3): ');
-  
-  return new Promise((resolve) => {
-    process.stdin.setRawMode(true);
-    process.stdin.resume();
-    process.stdin.on('data', async (key) => {
-      const choice = key.toString().trim();
-      process.stdin.setRawMode(false);
-      process.stdin.pause();
-      
-      console.log(choice);
-      
-      if (choice === '1') {
-        await runInteractiveSetup();
-      } else if (choice === '2') {
-        console.log('\n📝 Manual Setup:');
-        console.log('1. Copy .env.example to .env');
-        console.log('2. Edit .env with your server settings');
-        console.log('3. Run qwen-one again');
-        process.exit(0);
-      } else if (choice === '3') {
-        console.log('\n⚠️ Continuing without setup - errors may occur');
-      } else {
-        console.log('\n❌ Invalid choice, continuing without setup');
-      }
-      
-      resolve();
-    });
-  });
+  await runAutoSetup();
 }
 
-async function runInteractiveSetup(): Promise<void> {
-  console.log('\n🚀 Interactive Environment Setup');
-  console.log('=================================');
+async function runAutoSetup(): Promise<void> {
+  // Detect shell environment and find appropriate script
+  const isWindows = process.platform === 'win32';
+  const scriptName = isWindows ? 'env-setup.ps1' : 'env-setup.sh';
+  const shellCommand = isWindows ? 'powershell.exe' : 'bash';
+  const shellArgs = isWindows ? ['-File'] : [];
   
-  // Find the installation directory (look for scripts/env-setup.ps1)
+  // Find setup script in possible locations
   const possiblePaths = [
-    path.join(process.cwd(), 'scripts', 'env-setup.ps1'), // Local development
-    path.join(__dirname, '..', '..', '..', 'scripts', 'env-setup.ps1'), // Global install
-    path.join(process.argv[1], '..', '..', 'scripts', 'env-setup.ps1'), // Binary location
+    path.join(process.cwd(), 'scripts', scriptName), // Local development
+    path.join(__dirname, '..', '..', '..', 'scripts', scriptName), // Global install relative
+    path.join(path.dirname(process.argv[0]), '..', 'lib', 'node_modules', '@qwen-code', 'qwen-code', 'scripts', scriptName), // Global npm
   ];
   
   let setupScriptPath = null;
@@ -156,14 +127,24 @@ async function runInteractiveSetup(): Promise<void> {
   }
   
   if (!setupScriptPath) {
-    console.log('❌ Setup script not found. Please create .env file manually.');
+    console.log('❌ Setup script not found. Please create .env file manually:');
+    console.log('1. Copy .env.example to .env');
+    console.log('2. Edit .env with your server settings');
+    console.log('3. Run qwen-one again');
     return;
   }
   
-  console.log('Running interactive setup...\n');
+  console.log(`🚀 Running ${scriptName} in interactive mode...`);
   
   try {
-    const setupProcess = spawn('powershell.exe', ['-File', setupScriptPath, '-Interactive'], {
+    const args = [...shellArgs, setupScriptPath];
+    if (isWindows) {
+      args.push('-Interactive');
+    } else {
+      args.push('--interactive');
+    }
+    
+    const setupProcess = spawn(shellCommand, args, {
       stdio: 'inherit',
       shell: true
     });
@@ -173,15 +154,13 @@ async function runInteractiveSetup(): Promise<void> {
         if (code === 0) {
           console.log('\n✅ Environment setup completed!');
           console.log('Please run qwen-one again to continue.');
-          resolve(undefined);
+          process.exit(0);
         } else {
           console.log('\n❌ Setup failed. Please check manually.');
           reject(new Error(`Setup script exited with code ${code}`));
         }
       });
     });
-    
-    process.exit(0);
   } catch (error) {
     console.log('\n❌ Failed to run setup script:', error);
     console.log('Please create .env file manually.');

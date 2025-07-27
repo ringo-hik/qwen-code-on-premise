@@ -210,53 +210,6 @@ function resolveEnvVarsInObject<T>(obj: T): T {
   return obj;
 }
 
-function getGlobalInstallPath(): string | null {
-  try {
-    // Method 1: Use npm_config_prefix environment variable
-    if (process.env.npm_config_prefix) {
-      return process.env.npm_config_prefix;
-    }
-    
-    // Method 2: Try to find based on current script location (process.argv[1])
-    const scriptPath = process.argv[1];
-    if (scriptPath && scriptPath.includes('node_modules')) {
-      const nodeModulesIndex = scriptPath.indexOf('node_modules');
-      if (nodeModulesIndex !== -1) {
-        return path.dirname(scriptPath.substring(0, nodeModulesIndex + 'node_modules'.length));
-      }
-    }
-    
-    // Method 3: Try to find based on current module location (__dirname equivalent)
-    const currentFile = import.meta.url;
-    if (currentFile && currentFile.includes('node_modules')) {
-      const filePath = new URL(currentFile).pathname;
-      const nodeModulesIndex = filePath.indexOf('node_modules');
-      if (nodeModulesIndex !== -1) {
-        return path.dirname(filePath.substring(0, nodeModulesIndex + 'node_modules'.length));
-      }
-    }
-    
-    // Method 4: Check common global installation paths
-    const commonPaths = [
-      'C:\\npm-global', // Windows custom global path
-      path.join(homedir(), 'npm-global'), // User npm global
-      'C:\\Users\\' + process.env.USERNAME + '\\AppData\\Roaming\\npm', // Windows default
-      '/usr/local', // Unix/Linux global
-      '/opt/homebrew' // macOS Homebrew
-    ];
-    
-    for (const commonPath of commonPaths) {
-      if (fs.existsSync(path.join(commonPath, 'node_modules', '@qwen-code', 'qwen-code'))) {
-        return commonPath;
-      }
-    }
-    
-    return null;
-  } catch {
-    return null;
-  }
-}
-
 function findEnvFile(startDir: string): string | null {
   let currentDir = path.resolve(startDir);
   while (true) {
@@ -280,20 +233,6 @@ function findEnvFile(startDir: string): string | null {
       if (fs.existsSync(homeEnvPath)) {
         return homeEnvPath;
       }
-      
-      // NEW: check global installation path for .env files
-      const globalPath = getGlobalInstallPath();
-      if (globalPath) {
-        const globalGeminiEnvPath = path.join(globalPath, 'node_modules', '@qwen-code', 'qwen-code', GEMINI_DIR, '.env');
-        if (fs.existsSync(globalGeminiEnvPath)) {
-          return globalGeminiEnvPath;
-        }
-        const globalEnvPath = path.join(globalPath, 'node_modules', '@qwen-code', 'qwen-code', '.env');
-        if (fs.existsSync(globalEnvPath)) {
-          return globalEnvPath;
-        }
-      }
-      
       return null;
     }
     currentDir = parentDir;

@@ -57,26 +57,37 @@ npm install -g .
 qwen-one --version
 ```
 
-### **Step 3: Configure Environment Variables**
+### **Step 3: First Run & Automatic Setup**
 
-These environment variables are required to connect to your internal LLM and enable on-premise features.
+Simply run `qwen-one` for the first time - it will automatically detect missing configuration and guide you through setup:
 
-#### **For Windows (PowerShell):**
+```bash
+qwen-one
+```
 
+**What happens on first run:**
+- Automatically detects missing environment variables (`OPENAI_BASE_URL`, `OPENAI_API_KEY`)
+- Runs the appropriate setup script based on your system:
+  - **Windows**: `scripts/env-setup.ps1 -Interactive`
+  - **Linux/macOS**: `scripts/env-setup.sh --interactive`
+- Guides you through interactive configuration
+- Creates `.env` file with your settings
+- Ready to use immediately after setup
+
+#### **Manual Configuration (Alternative):**
+
+If you prefer to set up manually, these environment variables are required:
+
+**Windows (PowerShell):**
 ```powershell
-# Set environment variables for the current session
 $env:OPENAI_BASE_URL="http://your-internal-llm.company.com:8080/v1"
 $env:OPENAI_API_KEY="your-internal-api-key"
 $env:ON_PREMISE_MODE="true"
 $env:NODE_TLS_REJECT_UNAUTHORIZED="0"
-
-# To make them permanent, add them to your PowerShell profile or set them in the System Properties.
 ```
 
-#### **For Linux/macOS:**
-
+**Linux/macOS:**
 ```bash
-# Add the following lines to your ~/.bashrc or ~/.zshrc file
 export OPENAI_BASE_URL="http://your-internal-llm.company.com:8080/v1"
 export OPENAI_API_KEY="your-internal-api-key"
 export ON_PREMISE_MODE="true"
